@@ -15,7 +15,7 @@
    save_state="y"
    date_written="2018-08-15 11:40:15"
    requires="4.00"
-   version="1.0"
+   version="1.1"
    >
    
 </plugin>
@@ -206,6 +206,17 @@
 	</alias>
 	<alias
 		group="envon"
+		match="^(?:envons|envonsilent)$"
+		enabled="y"
+		name="EnvOnSilent"
+		script="EnvenomOnSilent"
+		sequence="100"
+		regexp="y"
+		>
+	</alias>
+
+	<alias
+		group="envon"
 		match="^envon$"
 		enabled="y"
 		name="EnvOn"
@@ -304,6 +315,7 @@ gmcparea = ""
 gmcproomid = ""
 gmcproomname = ""
 EnvBChannel = "gt"
+EnvSilent = "NO"
 
 function EnvTrueHelm(name, line, wc)
 	
@@ -504,8 +516,6 @@ function EnvenomOn()
 	
 	GetRoom()
 	
-	-- ColourNote(msg_colour, "", "Envenom system enabled.")
-	
 	EnvGetHelmTrig()
     EnvenomTable = {}
 	EnvenomTableCopy = {}
@@ -513,11 +523,14 @@ function EnvenomOn()
 	weapnum = 0
 	idnum = 0
 	EnvGold = 0
+	EnvSilent = "NO"
 	
 	EnableAlias ("EnvOn", false)
+	EnableAlias ("EnvOnSilent", false)
 	
 	world.EnableGroup ("Envenoms", 1)
 	SendNoEcho ("invmon on")
+
 	if EnvTrue ~= 0 then
 		SendNoEcho ("get " .. EnvTrue .. " " .. EnvTrueBag)
 		SendNoEcho ("wear " .. EnvTrue)
@@ -533,6 +546,39 @@ function EnvenomOn()
 	Send (EnvBChannel .. " @DEnvenom system is now @RONLINE @DLocation:[@R" .. gmcparea .. "@D/@R" .. gmcproomname .. "@D/@R" .. gmcproomid .. "@D]@w")
 	Send (EnvBChannel .. " @RDO NOT @Dgive all.'weapon' or errors may occur.@w")
 	
+end
+
+function EnvenomOnSilent()
+	
+	GetRoom()
+	
+	EnvGetHelmTrig()
+    EnvenomTable = {}
+	EnvenomTableCopy = {}
+
+	weapnum = 0
+	idnum = 0
+	EnvGold = 0
+	EnvSilent = "YES"
+	
+	EnableAlias ("EnvOn", false)
+	EnableAlias ("EnvOnSilent", false)
+	
+	world.EnableGroup ("Envenoms", 1)
+	SendNoEcho ("invmon on")
+
+	if EnvTrue ~= 0 then
+		SendNoEcho ("get " .. EnvTrue .. " " .. EnvTrueBag)
+		SendNoEcho ("wear " .. EnvTrue)
+	else
+		ColourNote(err_colour, "", "You have not set the ID number for your TRUE SEEING HELM. Please read ", qty_colour, "", "envhelp", err_colour, "", " for more information.")
+		Note()
+		ColourNote(err_colour, "", "If True Seeing drops it might cause an error with the script.")
+	end
+
+	gmcpbase = gmcp("char.base") -- fetch char.status and return it as a Lua table
+	charname = gmcpbase.name
+
 end
 
 function NewComers()
@@ -554,37 +600,41 @@ function LastCall()
 end
 
 function EnvenomOff()
+	
+		world.EnableGroup ("Envenoms", 0)
 
-	-- ColourNote(msg_colour, "", "Envenom system disabled.")
+		EnvenomTable = {}
+		EnvenomTableCopy = {}
+		
+		SendNoEcho ("invmon off")
+		SendNoEcho ("wear " .. EnvHelm)
+
+		if EnvTrue ~= 0 then
+			SendNoEcho ("put " .. EnvTrue .. " " .. EnvTrueBag)
+		else
+			ColourNote(err_colour, "", "A reminder - You have not set the ID number for your TRUE SEEING HELM. Please read ", qty_colour, "", "envhelp", err_colour, "", " for more information.")
+			Note()
+			ColourNote(err_colour, "", "If True Seeing drops it might cause an error with the script.")
+		end
 	
 	EnableAlias ("EnvOn", true)
-
-	world.EnableGroup ("Envenoms", 0)
-
-	EnvenomTable = {}
-	EnvenomTableCopy = {}
+	EnableAlias ("EnvSilent", true)
 	
-	SendNoEcho ("invmon off")
-	SendNoEcho ("wear " .. EnvHelm)
-
-	if EnvTrue ~= 0 then
-		SendNoEcho ("put " .. EnvTrue .. " " .. EnvTrueBag)
-	else
-		ColourNote(err_colour, "", "A reminder - You have not set the ID number for your TRUE SEEING HELM. Please read ", qty_colour, "", "envhelp", err_colour, "", " for more information.")
-		Note()
-		ColourNote(err_colour, "", "If True Seeing drops it might cause an error with the script.")
+	if EnvSilent == "YES" then
+		EnvSilent = "NO"
+		
+	elseif EnvSilent == "NO" then
+		
+		Send (EnvBChannel .. " @DEnvenom system is now @ROFFLINE@D.@w")
+		
+		if EnvGold ~= 0 then
+			local gold = comma_value(EnvGold)
+			
+			Send (EnvBChannel .. " @DThank you for your donations of @R" .. gold .. " @Dgold.@w")
+			
+		end
 	end
 	
-	
-	Send (EnvBChannel .. " @DEnvenom system is now @ROFFLINE@D.@w")
-	
-	if EnvGold ~= 0 then
-		local gold = comma_value(EnvGold)
-		
-		Send (EnvBChannel .. " @DThank you for your donations of @R" .. gold .. " @Dgold.@w")
-		
-	end
-
 end
 
 function EnvenomFail()
@@ -593,7 +643,12 @@ function EnvenomFail()
 	
 	SetTimerOption ("envenomfail", "seconds", timerremaining)
 	
+	timerremaining = tonumber(timerremaining) + 3
+	
+	SetTimerOption ("envenomend", "seconds", timerremaining)
+	
 	check (ResetTimer ("envenomfail"))
+	check (ResetTimer ("envenomend"))
 	check (EnableTimer ("envenomfail", 1))
 	check (EnableTimer ("envenomend", 1))
 
@@ -706,6 +761,9 @@ function env_help()
 	Note("")
 
 	ColourNote(help_command_colour, "", "envon          ", help_colour, "", " - turns the envenom system on")
+	Note("")
+
+	ColourNote(help_command_colour, "", "envons         ", help_colour, "", " - turns the envenom system on but does not broadcast")
 	Note("")
 
 	ColourNote(help_command_colour, "", "envoff         ", help_colour, "", " - turns the envenom system off")
