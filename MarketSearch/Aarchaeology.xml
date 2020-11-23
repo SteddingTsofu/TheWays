@@ -14,7 +14,7 @@
    purpose="Aarchaeology helper plugin."
    date_written="2015-11-01 18:09:48"
    requires="4.30"
-   version="1.0"
+   version="1.01"
    save_state="y"
    >
 <description>
