@@ -15,7 +15,7 @@
    save_state="y"
    date_written="2020-11-22 00:39:31"
    requires="4.30"
-   version="1.0"
+   version="1.1"
    >
 
 </plugin>
@@ -105,7 +105,7 @@
 		group="BruteForce"
 		script="BruteForceStartAt"
 		regexp="y"
-		sequence="90"
+		sequence="80"
 		ignore_case="y"
 		>
 	</alias>
@@ -160,9 +160,10 @@ startletter = ""
 mobnum = 1
 
 function BruteForceAbort()
-
-	check (EnableTimer ("BruteForceTimer", 0))
+	check (ResetTimer ("BruteForceTimer"))
+	check (ResetTimer ("BruteForceTimer2"))
 	check (EnableTimer ("BruteForceTimer2", 0))
+	check (EnableTimer ("BruteForceTimer", 0))
 	world.EnableGroup ("BruteForceTrigs", 1)
 	
 	ColourNote(msg_colour, "", "Brute Force Aborted. Keyword before abort: ", help_command_colour, "", mobkeyword)
@@ -174,7 +175,8 @@ function BruteForceStartAt(name, line, wc)
 	startletter = string.lower(wc[1])
 	scanname = wc[2]
 	mobnum = 1
-
+	mobkeyword = ""
+	
 	for i,v in ipairs(AlphaTable) do
 	
 		alpha = string.lower(AlphaTable[i])
@@ -198,6 +200,7 @@ function BruteForceStartBegin(name, line, wc)
 	scanname = wc[2]
 	lettertrack = 0
 	mobnum = 1
+	
 	world.EnableGroup ("BruteForceTrigs", 1)
 	check (EnableTimer ("BruteForceTimer", 1))
 	check (ResetTimer ("BruteForceTimer"))
@@ -209,6 +212,8 @@ function BruteForceStart(name, line, wc)
 	scanname = wc[1]
 	lettertrack = 0
 	mobnum = 1
+	mobkeyword = ""
+	
 	world.EnableGroup ("BruteForceTrigs", 1)
 	check (EnableTimer ("BruteForceTimer", 1))
 	check (ResetTimer ("BruteForceTimer"))
