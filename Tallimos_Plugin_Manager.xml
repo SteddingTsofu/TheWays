@@ -9,7 +9,7 @@
    purpose="Manages updates for Tallimos' plugins, based on Tallimos' work"
    date_written="2017-12-21 01:08:25"
    requires="4.76"
-   version="1.33"
+   version="1.34"
    save_state="y"
    >
 <description trim="y">
