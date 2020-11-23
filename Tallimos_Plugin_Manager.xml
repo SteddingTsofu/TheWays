@@ -14,25 +14,25 @@
    >
 <description trim="y">
 <![CDATA[
->    tsm
+>    tpm
         - display summary of all plugins
 
->    tsm install [number]
+>    tpm install [number]
         - downloads and installs/updates the plugin
 
->    tsm update
-        - checks for update for tsm itself
+>    tpm update
+        - checks for update for tpm itself
 
->    tsm update [number]
-        - this functions the same as "tsm install"
+>    tpm update [number]
+        - this functions the same as "tpm install"
 
->    tsm reload [number]
+>    tpm reload [number]
         - reloads all xml files related to the plugin
 
->    tsm reset
+>    tpm reset
         - resets all retained information about previous updates
 
->    tsm help
+>    tpm help
         - displays this help file :)
 
 ]]>
@@ -48,51 +48,51 @@
 	>
 	</alias>
    <alias
-		match="^tsm$"
+		match="^tpm$"
 		regexp="y"
 		enabled="y"
 		sequence="100"
-		script="tsm_main"
+		script="tpm_main"
 	>
    </alias>
    <alias
-		match="^tsm help$"
+		match="^tpm help$"
 		regexp="y"
 		enabled="y"
 		sequence="100"
-		script="tsm_help"
+		script="tpm_help"
 	>
    </alias>
    <alias
-		match="^tsm reset$"
+		match="^tpm reset$"
 		regexp="y"
 		enabled="y"
 		sequence="100"
-		script="tsm_reset"
+		script="tpm_reset"
 	>
    </alias>
    <alias
-		match="^tsm update ?(?<index>[0-9]+)?$"
+		match="^tpm update ?(?<index>[0-9]+)?$"
 		regexp="y"
 		enabled="y"
 		sequence="100"
-		script="tsm_update"
+		script="tpm_update"
 	>
    </alias>
    <alias
-		match="^tsm install (?<index>[0-9]+)$"
+		match="^tpm install (?<index>[0-9]+)$"
 		regexp="y"
 		enabled="y"
 		sequence="100"
-		script="tsm_install"
+		script="tpm_install"
 	>
 	</alias>
    <alias
-		match="^tsm reload (?<index>[0-9]+)$"
+		match="^tpm reload (?<index>[0-9]+)$"
 		regexp="y"
 		enabled="y"
 		sequence="100"
-		script="tsm_reload"
+		script="tpm_reload"
 	>
 	</alias>
 </aliases>
@@ -108,7 +108,7 @@ local currentPlugin = {}
 local pluginList = {}
 local updatePlugin = {}
 local pListNum = 0
-local pluginListUrl = "https://raw.githubusercontent.com/SteddingTsofu/TheWays/main/tsm.xml"
+local pluginListUrl = "https://raw.githubusercontent.com/SteddingTsofu/TheWays/main/tpm.xml"
 local lastPluginList
 
 local msg_colour      = "darkslategrey"
@@ -121,7 +121,7 @@ local cmd_required    = "royalblue"
 local help_command_colour  = "red"
 
 	
-function tsm_main(name, line, wc)
+function tpm_main(name, line, wc)
    
    	local title = "Welcome to Tallimos' Plugin Manager"
 	local title2 = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
@@ -147,7 +147,7 @@ function tsm_main(name, line, wc)
    async.HEAD(pluginListUrl, async_head_plist, "HTTPS", 120)
 end
 
-function tsm_install(name, line, wc)
+function tpm_install(name, line, wc)
    for p = 1, #pluginList do
       if pluginList[p] ~= nil and tonumber(wc.index) == p then
          printmsg("Attempting to install plugin #" .. wc.index .. " (" .. pluginList[p].name .. ")")
@@ -155,17 +155,17 @@ function tsm_install(name, line, wc)
       end
    end
    if #pluginList == 0 then
-      printmsg("Error: Unable to read plugin index. Have you typed tsm yet?")
+      printmsg("Error: Unable to read plugin index. Have you typed tpm yet?")
    end
 end
 
-function tsm_reset(name, line, wc)
+function tpm_reset(name, line, wc)
    installedPlugins = {}
    SaveState()
    printmsg("All information about previous updates have been cleared.")
 end
 
-function tsm_reload(name, line, wc)
+function tpm_reload(name, line, wc)
    for p = 1, #pluginList do
       if p == tonumber(wc.index) then
          printmsg("Attempting to reload plugin #" .. wc.index .. " (" .. pluginList[p].name .. ")")
@@ -176,17 +176,17 @@ function tsm_reload(name, line, wc)
    end
 end
 
-function tsm_update(name, line, wc)
+function tpm_update(name, line, wc)
    if wc.index == "" then
       printmsg("*** Checking if update is available for Tallimos' Plugin Manager.. Please wait.\r\n\r\n")
       local url = "https://raw.githubusercontent.com/SteddingTsofu/TheWays/main/Tallimos_Plugin_Manager.xml"
-      async.doAsyncRemoteRequest(url, async_tsm_download_complete, "HTTPS", 120)
+      async.doAsyncRemoteRequest(url, async_tpm_download_complete, "HTTPS", 120)
    else
-      Execute("tsm install " .. wc.index)
+      Execute("tpm install " .. wc.index)
    end
 end
 
-function tsm_help(name, line, wc)
+function tpm_help(name, line, wc)
    print("")
 	NoteStyle(2)			        
 	ColourNote("MediumSeaGreen", "", "Tallimos' Plugin Manager")
@@ -236,7 +236,7 @@ function async_head_plugin(retval, page, status, headers, full_status, request_u
          thisPlugin.updated = false
          ColourTell("CornFlowerBlue", "", "[" .. i .. "] ", "LightSkyBlue", "", thisPlugin.name .. " ")
          if thisPlugin.installed then
-            Hyperlink("tsm reload " .. i, "[Reload Plugin] ", "Reload Plugin #" .. pListNum, "LimeGreen", "black", 0, 1)
+            Hyperlink("tpm reload " .. i, "[Reload Plugin] ", "Reload Plugin #" .. pListNum, "LimeGreen", "black", 0, 1)
             for k, v in pairs(installedPlugins) do
                if thisPlugin.ids[1] == k then
                   if thisPlugin.lastModified == v then
@@ -247,7 +247,7 @@ function async_head_plugin(retval, page, status, headers, full_status, request_u
                end
             end
             if not thisPlugin.updated then
-               Hyperlink("tsm install " .. i, "[Update Plugin]", "Download and Update Plugin #" .. i, "DarkOrange", "black", 0, 1)
+               Hyperlink("tpm install " .. i, "[Update Plugin]", "Download and Update Plugin #" .. i, "DarkOrange", "black", 0, 1)
                print("")
                --if thisPlugin.lastModified ~= "Unknown" then
                --   ColourTell("LightSkyBlue", "", "     Update available since: " .. thisPlugin.lastModified)
@@ -257,7 +257,7 @@ function async_head_plugin(retval, page, status, headers, full_status, request_u
             ColourTell("CadetBlue", "", "     " .. thisPlugin.description)
             print("\r\n\r\n")
          else
-            Hyperlink("tsm install " .. i, "[Install Plugin]", "Download and Install Plugin #" .. pListNum, "DarkOrange", "black", 0, 1)
+            Hyperlink("tpm install " .. i, "[Install Plugin]", "Download and Install Plugin #" .. pListNum, "DarkOrange", "black", 0, 1)
             --ColourTell("LightSkyBlue", "", thisPlugin.lastModified)
             for k, v in pairs(installedPlugins) do
                --print(k, thisPlugin.ids[1])
@@ -279,7 +279,7 @@ function async_head_plugin(retval, page, status, headers, full_status, request_u
    end
 end
 
-function async_tsm_download_complete(retval, page, status, headers, full_status, request_url)
+function async_tpm_download_complete(retval, page, status, headers, full_status, request_url)
   if status == 200 then
     local version = tonumber(string.match(page, '%s%s+version="([0-9%.]+)"'))
     local installedVer = GetPluginInfo(GetPluginID(), 19)
@@ -456,7 +456,7 @@ function OnPluginInstall()
 		lastPluginList = load( "return "..lastListStr)( ) 
 	end
    lastListHash = GetVariable("lastListHash")
-   ColourTell("CornFlowerBlue", "", "Tallimos' Plugin Manager has been loaded. Type \"", "MediumSeaGreen", "", "tsm", "CornFlowerBlue", "", "\" or \"", "MediumSeaGreen", "", "tsm help", "CornFlowerBlue", "", "\"")
+   ColourTell("CornFlowerBlue", "", "Tallimos' Plugin Manager has been loaded. Type \"", "MediumSeaGreen", "", "tpm", "CornFlowerBlue", "", "\" or \"", "MediumSeaGreen", "", "tpm help", "CornFlowerBlue", "", "\"")
    print("")
 end
 
