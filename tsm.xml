@@ -67,7 +67,7 @@
   <plugin>
     <name>StatDisrupter</name>
     <author>Tallimos</author>
-    <id>03cda78cffb57ebed4f3b48c</id>
+    <id>528d70104de5ca0ab6b13d38</id>
     <description>Lets fine tune your spellup but automatically disrupting and recasting a spell the user wants to try for a better cast</description>
     <download>https://raw.githubusercontent.com/SteddingTsofu/TheWays/main/StatDisruptor/Tallimos_StatDisruptor.zip</download>
     <installpath>0</installpath>
