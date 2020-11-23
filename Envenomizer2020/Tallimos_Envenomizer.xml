@@ -15,7 +15,7 @@
    save_state="y"
    date_written="2018-08-15 11:40:15"
    requires="4.00"
-   version="1.1"
+   version="1.10"
    >
    
 </plugin>
@@ -229,6 +229,7 @@
 		group="Envenoms"
 		match="^(envnew|envnewcomers|envnc)$"
 		script="NewComers"
+		name="NewComers"
 		sequence="100"
 		regexp="y"
 		>
@@ -237,6 +238,7 @@
 		group="Envenoms"
 		match="^(envlc|envlastcall)$"
 		script="LastCall"
+		name="LastCall"
 		sequence="100"
 		regexp="y"
 		>
@@ -563,6 +565,8 @@ function EnvenomOnSilent()
 	
 	EnableAlias ("EnvOn", false)
 	EnableAlias ("EnvOnSilent", false)
+	EnableAlias ("LastCall", false)
+	EnableAlias ("NewComers", false)
 	
 	world.EnableGroup ("Envenoms", 1)
 	SendNoEcho ("invmon on")
@@ -576,6 +580,8 @@ function EnvenomOnSilent()
 		ColourNote(err_colour, "", "If True Seeing drops it might cause an error with the script.")
 	end
 
+	ColourNote(msg_colour, "", "Envenom System is ", help_command_colour, "", "ONLINE" , msg_colour, "", " - Silent mode Enabled.")
+	
 	gmcpbase = gmcp("char.base") -- fetch char.status and return it as a Lua table
 	charname = gmcpbase.name
 
@@ -622,7 +628,10 @@ function EnvenomOff()
 	
 	if EnvSilent == "YES" then
 		EnvSilent = "NO"
-		
+		ColourNote(msg_colour, "", "Envenom System is ", help_command_colour, "", "OFFLINE")
+		EnableAlias ("LastCall", true)
+		EnableAlias ("NewComers", true)
+
 	elseif EnvSilent == "NO" then
 		
 		Send (EnvBChannel .. " @DEnvenom system is now @ROFFLINE@D.@w")
