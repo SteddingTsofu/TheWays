@@ -3,7 +3,7 @@
   <plugin>
     <name>Aarchaeology</name>
     <author>Endymion</author>
-    <description>This is the original script made by Endymion. I have added 2 simple functions. You are already using the original you do not need to update unless you are using my Market Search script</description>
+    <description>This is the original script made by Endymion. I have added 2 simple functions. If you are already using the original you do not need to update unless you are using my Market Search script</description>
     <id>3ae386f3fb52d4eeabdb8e27</id>
     <download>https://raw.githubusercontent.com/SteddingTsofu/TheWays/main/MarketSearch/Aarchaeology.zip</download>
     <installpath>0</installpath>
