@@ -6,10 +6,10 @@
    author="Tallimos"
    id="bad8cd98f00b2c4b21251733"
    language="Lua"
-   purpose="Manages updates for Tallimos' plugins, based on Tallimos' work"
+   purpose="Manages updates for Tallimos' plugins, based on Pwar's work"
    date_written="2017-12-21 01:08:25"
    requires="4.76"
-   version="1.34"
+   version="1.35"
    save_state="y"
    >
 <description trim="y">
