@@ -24,7 +24,7 @@
     <id>b445cca7f6737a991a3f55ac</id>
     <description>Gives Venomists the ability to automatically envenom any weapons given to them and passes them back via a command</description>
     <download>https://raw.githubusercontent.com/SteddingTsofu/TheWays/main/Envenomizer2020/Tallimos_Envenomizer.zip</download>
-    <installpath>1</installpath>
+    <installpath>0</installpath>
   </plugin>
 
   <plugin>
