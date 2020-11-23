@@ -160,11 +160,12 @@ startletter = ""
 mobnum = 1
 
 function BruteForceAbort()
+	
 	check (ResetTimer ("BruteForceTimer"))
 	check (ResetTimer ("BruteForceTimer2"))
 	check (EnableTimer ("BruteForceTimer2", 0))
 	check (EnableTimer ("BruteForceTimer", 0))
-	world.EnableGroup ("BruteForceTrigs", 1)
+	world.EnableGroup ("BruteForceTrigs", 0)
 	
 	ColourNote(msg_colour, "", "Brute Force Aborted. Keyword before abort: ", help_command_colour, "", mobkeyword)
 	
