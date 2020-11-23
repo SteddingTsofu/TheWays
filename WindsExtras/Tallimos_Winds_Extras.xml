@@ -353,7 +353,6 @@ Extra Aliases and Triggers for Winds
 		sequence="200"
 		>
 	</alias>  
-
 	<alias
 		script="twe_help"
 		match="^twe help$"
