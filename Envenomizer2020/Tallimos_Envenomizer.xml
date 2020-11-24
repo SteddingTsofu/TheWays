@@ -15,7 +15,7 @@
    save_state="y"
    date_written="2018-08-15 11:40:15"
    requires="4.00"
-   version="1.12"
+   version="1.13"
    >
    
 </plugin>
@@ -624,7 +624,9 @@ function EnvenomOff()
 		end
 	
 	EnableAlias ("EnvOn", true)
-	EnableAlias ("EnvSilent", true)
+	EnableAlias ("EnvOnSilent", true)
+	EnableAlias ("LastCall", true)
+	EnableAlias ("NewComers", true)
 	
 	if EnvSilent == "YES" then
 		EnvSilent = "NO"
