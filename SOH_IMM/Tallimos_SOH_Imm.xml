@@ -140,12 +140,11 @@ function CheckImm(name, line, wc)
 		-- for k,d in pairs(searchsplit) do
 			-- string.sub (k, 1, len)
 		-- end
--- blah
+
 		local search = string.lower(ImmTable[immnum]["Short"])
 		
         len = string.len(SearchItem)
 
-        -- if string.find(string.sub(string.split(search," "),1,4),SearchItem) == nil then
 		for i,v in pairs(string.split(search," ")) do
 			if string.find(string.sub(v,1,len),SearchItem) == nil then
 			else
