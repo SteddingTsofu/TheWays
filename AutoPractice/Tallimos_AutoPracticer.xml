@@ -14,8 +14,8 @@
    purpose="Auto Practice certain skills and spells"
    save_state="y"
    date_written="2020-11-18 16:26:33"
-   requires="4.30"
-   version="1.0"
+   requires="4.36"
+   version="1.1"
    >
 
 </plugin>
@@ -526,16 +526,16 @@ require "wait"
 
 ----------------------------START OF VARIABLE DECLARATIONS----------------------------
 
-local msg_colour      = "darkslategrey"
+local msg_colour      = "lightslategrey"
 local err_colour      = "firebrick"
-local help_colour     = "royalblue"
-local qty_colour      = "yellow"
+local help_colour     = "lightslategrey"
+local qty_colour      = "cyan"
 local optional_colour = "lightcoral"
 local command_colour  = "white"
 local cmd_required    = "royalblue"
 local help_command_colour  = "red"
 
-local line = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+local noteline = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 
 minpercent = 85
 practices = 0
@@ -1362,9 +1362,8 @@ function AutoPracticeScholar(name, line, wc)
 end
 
 function tap_help()
-
-	local title = "Tallimos' AutoPractice - Help"
-	local title2 = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+	local title = "Tallimos' AutoPractice v" .. PLUGIN_VERSION .. " Help"
+	local title2 = noteline
 	
 	local leng = tonumber(string.len(title))
 	local leng2 = tonumber(string.len(title2))
@@ -1379,106 +1378,77 @@ function tap_help()
 	end
 
 	spacing = string.rep(" ", lendif)
-	
-	ColourNote(help_colour, "", spacing, help_command_colour, "", "Tallimos' AutoPractice - Help")
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	ColourNote(help_colour, "", "This plugin gives the user the ability to auto practice certain spells and skills.")
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	Note("")
 
+	ColourNote(help_colour, "", spacing, help_command_colour, "", title)
+
+	ColourNote(help_colour, "", noteline)
+	ColourNote(help_colour, "", "This plugin gives the user the ability to auto practice certain spells and skills.")
 	ColourNote(help_colour, "", "The user can use either ", help_command_colour, "", "tap", help_colour, "", " or ", help_command_colour, "", "tautopractice")
-	Note("")
+	ColourNote(help_colour, "", noteline)
 	
 	ColourNote(help_command_colour, "", "tap                       ", help_colour, "", " - command to start the autopractice process")
-	Note("")
 
 	ColourNote(help_command_colour, "", "tap max (skill/spell)     ", help_colour, "", " - command to fully practice a particular skill or spell.")
-	ColourNote(help_colour, "", "                             The skill or spell DOES NOT have to be added to the")
-	ColourNote(help_colour, "", "                             autopractice list for this command to work")
-	Note("")
+	ColourNote(help_colour, "", "                             The skill or spell DOES NOT have to be added to the autopractice")
+	ColourNote(help_colour, "", "                             list for this command to work")
 	
-	ColourNote(help_command_colour, "", "tap add (skill/spell)     ", help_colour, "", " - command to add a skill or spell to the autopractice")
-	ColourNote(help_colour, "", "                             list")
-	Note("")
+	ColourNote(help_command_colour, "", "tap add (skill/spell)     ", help_colour, "", " - command to add a skill or spell to the autopractice list")
 
-	ColourNote(help_command_colour, "", "tap remove (skill/spell)  ", help_colour, "", " - command to remove a skill or spell from the")
-	ColourNote(help_colour, "", "                             autopractice list")
-	Note("")
+	ColourNote(help_command_colour, "", "tap remove (skill/spell)  ", help_colour, "", " - command to remove a skill or spell from the autopractice list")
 	
-	ColourNote(help_command_colour, "", "tap <on/off> (skill/spell)", help_colour, "", " - command to toggle the autopractice for a particular")
-	ColourNote(help_colour, "", "                             skill or spell")
-	Note("")
+	ColourNote(help_command_colour, "", "tap <on/off> (skill/spell)", help_colour, "", " - command to toggle the autopractice for a particular skill or spell")
 
-	ColourNote(help_command_colour, "", "tap scholar <on/off>      ", help_colour, "", " - command to set if you have the scholar wish or not")
-	ColourNote(help_colour, "", "                             when the ", help_command_colour, "", "tap", help_colour, "" , " or ", help_command_colour, "", "tap max", help_colour, "", " command is used for the first time a check is made to see if the user has the wish")
-	Note("")
+	ColourNote(help_command_colour, "", "tap scholar <on/off>      ", help_colour, "", " - command to set if you have the scholar wish or not when the ", help_command_colour, "", "tap")
+	ColourNote(help_colour, "", "                             or ", help_command_colour, "", "tap max", help_colour, "", " command is used for the first time a check is made to")
+	ColourNote(help_colour, "", "                             see if the user has the wish")
 
 	ColourNote(help_command_colour, "", "tap abort                 ", help_colour, "", " - command to abort the autopractice system")
 	Note("")
 
 	ColourNote(help_command_colour, "white", "PLEASE NOTE:", help_command_colour, "", " (skill/spell)", help_colour, "", " must be the full name of the skill or spell.")
-	Note("")
 	
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+	ColourNote(help_colour, "", noteline)
 	Note("")
 
 end	-- tap_help
 
 function OnPluginInstall ()
+	PLUGIN_VERSION  = GetPluginInfo(GetPluginID(), 19)
+	PLUGIN_NAME   = GetPluginInfo(GetPluginID(), 1)
+
+	GetSavedData()	
 	
-	ColourNote(help_colour, "", "Thank you for installing Tallimos' AutoPracticer. Please see ", help_command_colour, "", "tap help", help_colour, "", " for more information.")
-	
-	if GetVariable ("appastfirstinstall") == "true" then
-		assert (loadstring (GetVariable ("PracticeTable") or "")) ()
-		assert (loadstring (GetVariable ("minpercent") or "")) ()
-		assert (loadstring (GetVariable ("ScholarCheck") or "")) ()
+	ColourNote(msg_colour, "", "Thank you for installing ", qty_colour, "", "Tallimos' AutoPracticer v" ..  PLUGIN_VERSION, msg_colour, "", ". Please see ", help_command_colour, "", "tap help", msg_colour, "", " for more information.")
 
-	else
-	
-		PracticeTable = {}
-		CreateInitialTable()
-		
-		minpercent = 85
-		ScholarCheck = "NO"
-
-	end
-
-	SaveState()
-
+	Note("")	
 end
 
 function OnPluginEnable()
+	GetSavedData()
+end -- OnPluginEnable
 
-	ColourNote(help_colour, "", "Thank you for installing Tallimos' AutoPracticer. Please see ", help_command_colour, "", "tap help", help_colour, "", " for more information.")
-	
+function GetSavedData()
 	if GetVariable ("appastfirstinstall") == "true" then
 		assert (loadstring (GetVariable ("PracticeTable") or "")) ()
 		assert (loadstring (GetVariable ("minpercent") or "")) ()
 		assert (loadstring (GetVariable ("ScholarCheck") or "")) ()
-
 	else
-	
 		PracticeTable = {}
 		CreateInitialTable()
 		
 		minpercent = 85
 		ScholarCheck = "NO"
-
 	end
 
 	SaveState()
-
-end -- OnPluginEnable
+end
 
 function OnPluginSaveState ()
-
 	SetVariable ("PracticeTable", "PracticeTable = " .. serialize.save_simple (PracticeTable))
 	SetVariable ("minpercent", "minpercent = " .. serialize.save_simple (minpercent))
 	SetVariable ("ScholarCheck", "ScholarCheck = " .. serialize.save_simple (ScholarCheck))
 	SetVariable ("appastfirstinstall", "true")
-
 end -- OnPluginSaveState
-
 ]]>
 </script>
 </muclient>
