@@ -14,8 +14,8 @@
    purpose="Extra Aliases and Triggers for Winds"
    save_state="y"
    date_written="2020-08-20 13:25:13"
-   requires="4.30"
-   version="1.0"
+   requires="4.36"
+   version="1.1"
    >
 <description trim="y">
 <![CDATA[
@@ -353,6 +353,7 @@ Extra Aliases and Triggers for Winds
 		sequence="200"
 		>
 	</alias>  
+
 	<alias
 		script="twe_help"
 		match="^twe help$"
@@ -377,16 +378,17 @@ require "aardmapper"
 require "aard_lua_extras"
 require "wait"
 
-local msg_colour      = "darkslategrey"
+local msg_colour      = "lightslategrey"
 local err_colour      = "firebrick"
-local help_colour     = "royalblue"
-local qty_colour      = "yellow"
+local help_colour     = "lightslategrey"
+local qty_colour      = "cyan"
 local optional_colour = "lightcoral"
 local command_colour  = "white"
 local cmd_required    = "royalblue"
 local help_command_colour  = "red"
 
-local line = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+local noteline = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+local cline = "......................................................................"
 
 local repchan = "tracker"
 local windshours = 0
@@ -399,36 +401,26 @@ casefocus = 5
 WindsQP = 0
 
 function MarketDisable()
-
 	world.EnableGroup ("WindsDisable", 0)
-	
-end
+end -- MarketDisable
 
 function MarketEnable()
-
 	world.EnableGroup ("WindsDisable", 1)
 	
-end
+end -- MarketEnable
 
 function WindsQuestPoints(name, line, wc)
-
 	local qp = tonumber(wc[1])
 	WindsQP = WindsQP + qp
-	
-end
+end -- WindsQuestPoints
 
 function CheckWinds()
-
 	SendNoEcho ("lbid -f treasure 201 201")
-
-end
+end -- CheckWinds
 
 function CheckDeck(name, line, wc)
-
 	if wc[1] == nil or wc[1] == "" then
-		
 		ColourNote(err_colour, "", "Please choose a deck to display, 1-4")
-		
 	else
 		local deck = tonumber(wc[1])
 		
@@ -442,9 +434,16 @@ function CheckDeck(name, line, wc)
 			Deck4()
 		end
 	end
-end
+end -- CheckDeck
 
 function Deck1()
+	local title = "Case 1 Checklist"
+	local title2 = cline
+	
+	spacing = HelpSpacing(title, title2)
+	
+	ColourNote(msg_colour, "", spacing, "red", "", "Case ", "yellow", "", "1", "red", "", " Checklist")
+	Note("")
 
 	ColourNote("yellow", "", "......................................................................")
 	ColourNote("yellow", "", ".   ", "red", "", "o   \\ o /  _ o        __|    \\ /     |__         o _  \\ o /   o   ", "yellow", "", ".")
@@ -493,10 +492,16 @@ function Deck1()
 	ColourNote("yellow", "", ".  ", "red", "", "/|\\    |     /\\   __\\o   \\o    |    o/     o/__   /\\     |    /|\\  ", "yellow", "", ".")
 	ColourNote("yellow", "", ".  ", "red", "", "/ \\   / \\   | \\  /) |    ( \\  /o\\  / )    |   (\\  / |   / \\   / \\  ", "yellow", "", ".")
 	ColourNote("yellow", "", "......................................................................")
-
-end
+end -- Deck1
 
 function Deck2()
+	local title = "Case 2 Checklist"
+	local title2 = cline
+	
+	spacing = HelpSpacing(title, title2)
+	
+	ColourNote(msg_colour, "", spacing, "red", "", "Case ", "yellow", "", "2", "red", "", " Checklist")
+	Note("")
 
 	ColourNote("yellow", "", "......................................................................")
 	ColourNote("yellow", "", ".   ", "red", "", "o   \\ o /  _ o        __|    \\ /     |__         o _  \\ o /   o   ", "yellow", "", ".")
@@ -545,10 +550,16 @@ function Deck2()
 	ColourNote("yellow", "", ".  ", "red", "", "/|\\    |     /\\   __\\o   \\o    |    o/     o/__   /\\     |    /|\\  ", "yellow", "", ".")
 	ColourNote("yellow", "", ".  ", "red", "", "/ \\   / \\   | \\  /) |    ( \\  /o\\  / )    |   (\\  / |   / \\   / \\  ", "yellow", "", ".")
 	ColourNote("yellow", "", "......................................................................")
-
-end
+end -- Deck2
 
 function Deck3()
+	local title = "Case 3 Checklist"
+	local title2 = cline
+	
+	spacing = HelpSpacing(title, title2)
+	
+	ColourNote(msg_colour, "", spacing, "red", "", "Case ", "yellow", "", "3", "red", "", " Checklist")
+	Note("")
 
 	ColourNote("yellow", "", "......................................................................")
 	ColourNote("yellow", "", ".   ", "red", "", "o   \\ o /  _ o        __|    \\ /     |__         o _  \\ o /   o   ", "yellow", "", ".")
@@ -597,10 +608,16 @@ function Deck3()
 	ColourNote("yellow", "", ".  ", "red", "", "/|\\    |     /\\   __\\o   \\o    |    o/     o/__   /\\     |    /|\\  ", "yellow", "", ".")
 	ColourNote("yellow", "", ".  ", "red", "", "/ \\   / \\   | \\  /) |    ( \\  /o\\  / )    |   (\\  / |   / \\   / \\  ", "yellow", "", ".")
 	ColourNote("yellow", "", "......................................................................")
-
-end
+end -- Deck3
 
 function Deck4()
+	local title = "Case 4 Checklist"
+	local title2 = cline
+	
+	spacing = HelpSpacing(title, title2)
+	
+	ColourNote(msg_colour, "", spacing, "red", "", "Case ", "yellow", "", "4", "red", "", " Checklist")
+	Note("")
 
 	ColourNote("yellow", "", "......................................................................")
 	ColourNote("yellow", "", ".   ", "red", "", "o   \\ o /  _ o        __|    \\ /     |__         o _  \\ o /   o   ", "yellow", "", ".")
@@ -649,11 +666,12 @@ function Deck4()
 	ColourNote("yellow", "", ".  ", "red", "", "/|\\    |     /\\   __\\o   \\o    |    o/     o/__   /\\     |    /|\\  ", "yellow", "", ".")
 	ColourNote("yellow", "", ".  ", "red", "", "/ \\   / \\   | \\  /) |    ( \\  /o\\  / )    |   (\\  / |   / \\   / \\  ", "yellow", "", ".")
 	ColourNote("yellow", "", "......................................................................")
+end -- Deck4
 
-end
-
+-------------------------------------------
+------------ WINDS RUN SCRIPTS ------------
+-------------------------------------------
 function CagedRoom()
-	
 	Send ("wake")
 	
 	GetRoom()
@@ -692,67 +710,52 @@ function CagedRoom()
 		Send ("search ice")
 		Send ("search sludge")
 	end
-	
-end
+end -- CagedRoom
 
 function GetRoom()
-
 	Send_GMCP_Packet("request room")
 
 	gmcparea = gmcp("room.info.zone")
 	gmcproomid = gmcp("room.info.num")
-	
-end
+end -- GetRoom
 
 function WindsUpdate(name, line, wc)
-
 	local name = wc[1]
 	
 	if name == nil or name == "" then
 	else
-	
 		WindsTable[name]["Need"] = "NO"
 		WindsTable[name]["Color"] = "GREEN"
-
 	end
-	
-end
+end -- WindsUpdate
 
 function WindsRunUpdateEnable()
-
 	world.EnableGroup ("WindsRunUpdateTrigs", 1)
-
-end
+end -- WindsRunUpdateEnable
 
 function WindsRunUpdateDisable()
-
 	world.EnableGroup ("WindsRunUpdateTrigs", 0)
 	world.EnableGroup ("WindsRunNodHynes", 0)
 	world.EnableGroup ("WindsRun", 0)
-	
+
 	if WindsQP ~= 0 then 
 		Send ("tracker " .. "@DWinds QP Reward: @R" .. WindsQP .. " @DQP earned.@w")
 	end
 	
 	SaveState()
-	
-end
+end -- WindsRunUpdateDisable
 
 function WindsUpdateEnable()
-
 	world.EnableGroup ("WindsUpdateTrigs", 1)
-
-end
+end -- WindsUpdateEnable
 
 function WindsUpdateDisable()
-
 	world.EnableGroup ("WindsUpdateTrigs", 0)
-	SaveState()
 	
-end
+	SaveState()
+end -- WindsUpdateDisable
 
 function WindsLBid(name, line, args, styles)
-	
 	for i, s in ipairs(styles) do
 		ColourTell(RGBColourToName(s.textcolour), "", s.text)
 	end
@@ -767,25 +770,17 @@ function WindsLBid(name, line, args, styles)
 	end
 
 	if casefocus == 5 then
-		
 		ColourNote("magenta", "", " [", "cyan", "", WindsTable[name]["Case"], "magenta", "", " | ", "cyan", "", have, "magenta", "", "]")
-
-	else
-	
+	else	
 		local focuscase = "Case " .. casefocus
 		
 		if WindsTable[name]["Case"] == focuscase then
-		
 			ColourNote("magenta", "", " [", "cyan", "", WindsTable[name]["Case"], "magenta", "", " | ", "cyan", "", have, "magenta", "", "]")
-
 		end
-
 	end
-	
-end
+end -- WindsLBid
 
 function inventory_winds(name, line, args, styles)
-		
 	for i, s in ipairs(styles) do
 		ColourTell(RGBColourToName(s.textcolour), "", s.text)
 	end
@@ -806,26 +801,19 @@ function inventory_winds(name, line, args, styles)
 	end
 	
 	if casefocus == 5 then
-		
 		ColourNote("magenta", "", " [", "cyan", "", WindsTable[name]["Case"], "magenta", "", " | ", "cyan", "", have, "magenta", "", "]")
-
 	else
-	
 		local focuscase = "Case " .. casefocus
 		
 		if WindsTable[name]["Case"] == focuscase then
-		
 			ColourNote("magenta", "", " [", "cyan", "", WindsTable[name]["Case"], "magenta", "", " | ", "cyan", "", have, "magenta", "", "]")
-
 		end
-
 	end
-	
-end
+end -- inventory_winds
 
 function selling_winds(name, line, args, styles)
-
 	local w = 0
+
 	for i, s in ipairs(styles) do
 		ColourTell(RGBColourToName(s.textcolour), "", s.text)
 	end
@@ -839,26 +827,18 @@ function selling_winds(name, line, args, styles)
 		have = "HAVE"
 	end
 
-	if casefocus == 5 then
-		
+	if casefocus == 5 then		
 		ColourNote("magenta", "", " [", "cyan", "", WindsTable[name]["Case"], "magenta", "", " | ", "cyan", "", have, "magenta", "", "]")
-
 	else
-	
 		local focuscase = "Case " .. casefocus
 		
 		if WindsTable[name]["Case"] == focuscase then
-		
 			ColourNote("magenta", "", " [", "cyan", "", WindsTable[name]["Case"], "magenta", "", " | ", "cyan", "", have, "magenta", "", "]")
-
 		end
-
 	end
-
-end
+end -- selling_winds
 
 function WindsAuction(name, line, args, styles)
-
 	for i, s in ipairs(styles) do
 		ColourTell(RGBColourToName(s.textcolour), "", s.text)
 	end
@@ -873,115 +853,78 @@ function WindsAuction(name, line, args, styles)
 	end
 	
 	if casefocus == 5 then
-		
 		ColourNote("magenta", "", " [", "cyan", "", WindsTable[name]["Case"], "magenta", "", " | ", "cyan", "", have, "magenta", "", "]")
-
 	else
-	
 		local focuscase = "Case " .. casefocus
 		
 		if WindsTable[name]["Case"] == focuscase then
-		
 			ColourNote("magenta", "", " [", "cyan", "", WindsTable[name]["Case"], "magenta", "", " | ", "cyan", "", have, "magenta", "", "]")
-
 		end
-
 	end
-
-end
+end -- WindsAuction
 
 function ClearCase(name, line, wc)
-	
 	if tonumber(wc[1]) == 1 or tonumber(wc[1]) == 2 or tonumber(wc[1]) == 3 or tonumber(wc[1]) == 4 then
-	
 		local casename = "Case " .. wc[1]
 		
 		ColourNote (msg_colour, "", "Clearing Collector Case ", qty_colour, "", wc[1])
 		
 		for i,v in pairs(WindsTable) do
-
 			cardname = i
 			
 			if WindsTable[cardname]["Case"] == casename then
-
 				WindsTable[cardname]["Need"] = "YES"
-
+				WindsTable[cardname]["Color"] = "RED"
 			end
-			
 		end
-	
 	else
-		
 		ColourNote (err_colour, "", "Valid options are ", qty_colour, "", "clearcase 1-4", err_colour, "", ".")
-
 	end
 	
-end
+	SaveState()
+end -- ClearCase
 
 function TouchObelisk()
-
 	GetRoom()
 	
 	if tonumber(gmcproomid) == 39902 then
-	
 		SendNoEcho ("touch obelisk")
 		
 		world.EnableGroup ("WindsRun", 1)
-
 	else
-	
 		ColourNote(err_colour, "", "You are not in the correct room to ", qty_colour, "", "TOUCH OBELISK", err_colour, "", ". You must be in ", qty_colour, "", "An Unholy Grove - 39902")
-
 	end
-
-end
+end -- TouchObelisk
 
 function SearchFloor()
-
 	GetRoom()
 	
 	if tonumber(gmcproomid) == 39913 then
-	
 		SendNoEcho ("search floor")
-
 	else
-	
 		ColourNote(err_colour, "", "You are not in the correct room to ", qty_colour, "", "SEARCH FLOOR", err_colour, "", ". You must be in ", qty_colour, "", "Within the Ruins of a Great Library - 39913")
-
 	end
-
-end
+end -- SearchFloor
 
 function ClearBooks()
-
 	GetRoom()
 	
 	if tonumber(gmcproomid) == 39913 then
-	
 		SendNoEcho ("clear books")
-
 	else
-	
 		ColourNote(err_colour, "", "You are not in the correct room to ", qty_colour, "", "CLEAR BOOKS", err_colour, "", ". You must be in ", qty_colour, "", "Within the Ruins of a Great Library - 39913")
-
 	end
-
-end
+end -- ClearBooks
   
 function NodHynes()
-
 	SendNoEcho ("nod hynes")
-	
-end
+end -- NodHynes
 
 function NodHynesEnable()
-
 	world.EnableGroup ("WindsRunNodHynes", 1)
-
-end
+end -- NodHynesEnable
 
 function CreateWindsTable()
-
 	WindsTable = {}
 
 	-- Winds Case 1
@@ -2111,11 +2054,9 @@ function CreateWindsTable()
 	WindsTable["Yandros"]["Case"] = "Case 4"
 	WindsTable["Yandros"]["Need"] = "YES"
 	WindsTable["Yandros"]["Color"] = "RED"
-
-end
+end -- CreateWindsTable
 
 function CheckWindsTimer(name, line, wc)
-
 	world.EnableGroup ("WindsTimer", 1)
 	SendNoEcho ("tell nothamil timer")
 
@@ -2123,27 +2064,20 @@ function CheckWindsTimer(name, line, wc)
 	else
 		repchan = wc[1]
 	end
-	
-
 end -- CheckWindsTimer
 
 function WindsTimerEnd()
-
 	SendNoEcho (repchan .. " @DYou are free to run winds.")
 	world.EnableGroup ("WindsTimer", 0)
-
 end -- WindsTimerEnd
 
 function WindsTimerLeft(name, line, wc)
-
 	windshours = wc[1]
 	windsminutes = wc[2]
 	windsseconds = wc[3]
-
-end
+end -- WindsTimerLeft
 
 function WindsTimerDisplay(name, line, wc)
-
 	local hour = wc[1]
 	local minute = wc[2]
 	local day = wc[3]
@@ -2165,11 +2099,9 @@ function WindsTimerDisplay(name, line, wc)
 	end
 	
 	world.EnableGroup ("WindsTimer", 0)
-
 end -- WindsTimerDisplay
 
 function CaseFocus(name, line, wc)
-
 	if wc[1] == nil or wc[1] == "" then
 		ColourNote(err_colour, "", "ERROR Contact Tallimos")
 	else
@@ -2177,46 +2109,86 @@ function CaseFocus(name, line, wc)
 		ColourNote(msg_colour, "", "Case Focus has been turned on and set to ", qty_colour, "", casefocus)
 	end
 	
-end
+	SaveState()
+end -- CaseFocus
 
 function CaseFocusToggle()
-
-	casefocus = 5
 	ColourNote(msg_colour, "", "Case Focus has been turned off")
-
-end
+	casefocus = 5
+	
+	SaveState()
+end -- CaseFocusToggle
 
 function CaseFocusDisplay()
-
 	if casefocus == 1 then
-	
 		ColourNote(msg_colour, "", "You are currently focusing on Case #1 - ", "yellow", "", "Collector Case")
-
 	elseif casefocus == 2 then
-	
 		ColourNote(msg_colour, "", "You are currently focusing on Case #2 - ", "yellow", "", "Expansion Case")
-
 	elseif casefocus == 3 then
-	
 		ColourNote(msg_colour, "", "You are currently focusing on Case #3 - ", "yellow", "", "Memorial & IMM Case")
-	
 	elseif casefocus == 4 then
-	
 		ColourNote(msg_colour, "", "You are currently focusing on Case #4 - ", "yellow", "", "Original & IMM Case")
-		
 	elseif casefocus == 5 then
-	
 		ColourNote(msg_colour, "", "You are currently not focusing on any case.")	
-	
 	end
 	
-end
+	SaveState()
+end -- CaseFocusDisplay
 
 function twe_help()	
+	local title = "Tallimos' Winds Extras v" .. PLUGIN_VERSION .. " Help"
+	local title2 = noteline
+
+	spacing = HelpSpacing(title, title2)
 	
-	local title = "Tallimos' Winds Extras - Help"
-	local title2 = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+	ColourNote(help_colour, "", spacing, help_command_colour, "", title)
+	ColourNote(help_colour, "", noteline)
+	ColourNote(help_colour, "", "This plugin gives the user a nice way of keeping track of their cards. It will show the user if")
+	ColourNote(help_colour, "", "they need the cards when they check the market. Also included are some commands that will help")
+	ColourNote(help_colour, "", "with Winds epic runs.")
+	ColourNote(help_colour, "", noteline)
+
+	Note("")
 	
+	ColourNote(help_colour, "", "Card Management")
+	ColourNote(help_colour, "", "---------------")
+	
+	ColourNote(help_command_colour, "", "checkwinds", help_colour, "", "  - command use to check the market for cards | command can be ", help_colour, "", "shortened to ", help_command_colour, "", "wcw")
+	
+	ColourNote(help_command_colour, "", "checkdeck #", help_colour, "", " - command use to check and see which winds card you have for that particular case")
+	ColourNote(help_command_colour, "", "            	 ", help_colour, "", "command can be shortened to ", help_command_colour, "", "cdeck #", help_colour, "", " or ", help_command_colour, "", "wcd #")
+
+	ColourNote(help_command_colour, "", "clearcase #", help_colour, "", " - command use to clear the checklist for that particular case command can be")
+	ColourNote(help_command_colour, "", "           ", help_colour, "", "   shortened to ", help_command_colour, "", "wcc #")
+	
+	ColourNote(help_command_colour, "", "casefocus #", help_colour, "", " - command use to set a focus for for a particular case. If set you will only be")
+	ColourNote(help_command_colour, "", "           ", help_colour, "", "   told which cards you need for that case when looking at market, auction and")
+	ColourNote(help_command_colour, "", "           ", help_colour, "", "   inventory. command can be shortened to ", help_command_colour, "", "wcf #")
+	ColourNote(help_command_colour, "", "           ", help_colour, "", " - use ", help_command_colour, "", "casefocus off", help_colour, "", " to turn off case focus")
+	ColourNote(help_command_colour, "", "           ", help_colour, "", " - ", help_command_colour, "", "casefocus", help_colour, "", " on its own will show you the focused case")
+
+	Note("")
+	
+	ColourNote(help_colour, "", "Epic Run Commands")
+	ColourNote(help_colour, "", "-----------------")
+	
+	ColourNote(help_command_colour, "", "wto", help_colour, "", "   - command used to touch obelisk")
+	ColourNote(help_command_colour, "", "caged", help_colour, "", " - command used in the trap rooms")
+	ColourNote(help_command_colour, "", "wsf", help_colour, "", "   - command used to search floor")
+	ColourNote(help_command_colour, "", "wcb", help_colour, "", "   - command used to clear books")
+	ColourNote(help_command_colour, "", "wnh", help_colour, "", "   - command used to nod hynes")
+	Note("")
+	
+	ColourNote(help_colour, "", "Other")
+	ColourNote(help_colour, "", "-----")
+
+	ColourNote(help_command_colour, "", "windstimer ", optional_colour, "", "<channel>", help_colour, "", " - displays how much time you have left on your winds run timer.")
+	
+	ColourNote(help_colour, "", noteline)
+	Note("")
+end	-- twe_help
+
+function HelpSpacing(title, title2)
 	local leng = tonumber(string.len(title))
 	local leng2 = tonumber(string.len(title2))
 	
@@ -2231,112 +2203,46 @@ function twe_help()
 
 	spacing = string.rep(" ", lendif)
 	
-	ColourNote(help_colour, "", spacing, help_command_colour, "", "Tallimos' Winds Extras - Help")
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	ColourNote(help_colour, "", "This plugin gives the user a nice way of keeping track of their cards. It")
-	ColourNote(help_colour, "", "will show the user if they need the cards when they check the market. Also")
-	ColourNote(help_colour, "", "included are some commands that will help with Winds epic runs.")
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	Note("")
+	return spacing
+end -- HelpSpacing
 
-	ColourNote(help_colour, "", "Card Management")
-	ColourNote(help_colour, "", "---------------")
-	Note("")
-	
-	ColourNote(help_command_colour, "", "checkwinds", help_colour, "", "  - command use to check the market for cards | command can be")
-	ColourNote(help_command_colour, "", "           ", help_colour, "", "   shortened to ", help_command_colour, "", "wcw")
-	
-	ColourNote(help_command_colour, "", "checkdeck #", help_colour, "", " - command use to check and see which winds card you have for")
-	ColourNote(help_command_colour, "", "           ", help_colour, "", "   that particular case | command can be shortened to ", help_command_colour, "", "cdeck #")
-	ColourNote(help_command_colour, "", "           ", help_colour, "", "   or ", help_command_colour, "", "wcd #")
+function OnPluginInstall()
+	PLUGIN_VERSION  = GetPluginInfo(GetPluginID(), 19)
+	PLUGIN_NAME   = GetPluginInfo(GetPluginID(), 1)
 
-	ColourNote(help_command_colour, "", "clearcase #", help_colour, "", " - command use to clear the checklist for that particular case")
-	ColourNote(help_command_colour, "", "           ", help_colour, "", "   command can be shortened to ", help_command_colour, "", "wcc #")
+	GetSavedData()	
 	
-	ColourNote(help_command_colour, "", "casefocus #", help_colour, "", " - command use to set a focus for for a particular case. If set")
-	ColourNote(help_command_colour, "", "           ", help_colour, "", "   you will only be told which cards you need for that case when")
-	ColourNote(help_command_colour, "", "           ", help_colour, "", "   looking at market, auction and inventory.")
-	ColourNote(help_command_colour, "", "           ", help_colour, "", "   command can be shortened to ", help_command_colour, "", "wcf #")
-	ColourNote(help_command_colour, "", "           ", help_colour, "", " - use ", help_command_colour, "", "casefocus off", help_colour, "", " to turn off case focus")
-	ColourNote(help_command_colour, "", "           ", help_colour, "", " - ", help_command_colour, "", "casefocus", help_colour, "", " on its own will show you the focused case")
-
-	Note("")
-	
-	ColourNote(help_colour, "", "Epic Run Commands")
-	ColourNote(help_colour, "", "-----------------")
-	Note("")
-	
-	ColourNote(help_command_colour, "", "wto", help_colour, "", "   - command used to touch obelisk")
-	ColourNote(help_command_colour, "", "caged", help_colour, "", " - command used in the trap rooms")
-	ColourNote(help_command_colour, "", "wsf", help_colour, "", "   - command used to search floor")
-	ColourNote(help_command_colour, "", "wcb", help_colour, "", "   - command used to clear books")
-	ColourNote(help_command_colour, "", "wnh", help_colour, "", "   - command used to nod hynes")
-	Note("")
-	
-	ColourNote(help_colour, "", "Other")
-	ColourNote(help_colour, "", "-----")
-	Note("")
-
-	ColourNote(help_command_colour, "", "windstimer ", optional_colour, "", "<channel>", help_colour, "", " - displays how much time you have left on your winds")
-	ColourNote(help_colour, "", "                       run timer.")
-	Note("")
-	
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	Note("")
-
-end	-- twe_help
-
-function OnPluginInstall ()
-	
-	ColourNote(help_colour, "", "Thank you for installing Tallimos' Winds Extras. Please see ", help_command_colour, "", "twe help", help_colour, "", " for more information.")
+	ColourNote(msg_colour, "", "Thank you for installing ", qty_colour, "", "Tallimos' Winds Extras v" ..  PLUGIN_VERSION, msg_colour, "", ". Please see ", help_command_colour, "", "twe help", msg_colour, "", " for more information.")
 	Note("")
 	
 	ColourNote(help_colour, "", "To get started all you have to do is start identifying your cases.")
 	Note("")
 	
-	ColourNote(help_colour, "", "Still to be added - ", help_command_colour, "", "stuff for when you turn in a deck")
-	
-	if GetVariable ("wepastfirstinstall") == "true" then
-		assert (loadstring (GetVariable ("WindsTable") or "")) ()
-		assert (loadstring (GetVariable ("casefocus") or "")) ()
-		
-	else
-	
-		CreateWindsTable()
-		casefocus = 5
-		
-	end
-
-	SaveState()
-
-end
+	ColourNote(help_colour, "", "Still to be added - ", help_command_colour, "", "stuff for when you turn in a deck")	
+	Note("")
+end -- OnPluginInstall
 
 function OnPluginEnable()
-
-	if GetVariable ("wepastfirstinstall") == "true" then
-		assert (loadstring (GetVariable ("WindsTable") or "")) ()
-		assert (loadstring (GetVariable ("casefocus") or "")) ()
-
-	else
-	
-		CreateWindsTable()
-		casefocus = 5
-		
-	end
-
-	SaveState()
-     
+	GetSavedData()
 end -- OnPluginEnable
 
-function OnPluginSaveState ()
-
+function OnPluginSaveState()
 	SetVariable ("WindsTable", "WindsTable = " .. serialize.save_simple (WindsTable))
 	SetVariable ("casefocus", "casefocus = " .. serialize.save_simple (casefocus))
 	SetVariable ("wepastfirstinstall", "true")
-
 end -- OnPluginSaveState
-
 	
+function GetSavedData()
+	if GetVariable ("wepastfirstinstall") == "true" then
+		assert (loadstring (GetVariable ("WindsTable") or "")) ()
+		assert (loadstring (GetVariable ("casefocus") or "")) ()
+	else
+		CreateWindsTable()
+		casefocus = 5
+	end
+
+	SaveState()
+end -- GetSavedData
 ]]>
 </script> 
 </muclient>
