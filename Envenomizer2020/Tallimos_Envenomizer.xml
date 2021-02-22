@@ -14,15 +14,78 @@
    purpose="Envenoms all weapons given to user. Will also return non weapons."
    save_state="y"
    date_written="2018-08-15 11:40:15"
-   requires="4.00"
-   version="1.13"
+   requires="4.36"
+   version="1.4"
    >
    
 </plugin>
 
 <!--  Triggers  -->
-
 <triggers>
+	<trigger
+		group="EnvenomsLostConnect"
+		keep_evaluating="y"
+		match="(.*?) is already envenomed\."
+		regexp="y"
+		script="AlreadyEnvenomLostConnect"
+		sequence="100"
+		>
+	</trigger>
+	<trigger
+		group="EnvenomsLostConnect"
+		keep_evaluating="y"
+		match="^Commence Failed Envenom Retry\!$"
+		regexp="y"
+		script="FailedEnvenomRetry"
+		sequence="100"
+		>
+	</trigger>
+	<trigger
+		group="EnvenomsLostConnect"
+		keep_evaluating="y"
+		match="^You fail to envenom (.*?)\.$"
+		regexp="y"
+		script="EnvenomFailLostConnect"
+		sequence="100"
+		>
+	</trigger>
+	<trigger
+		group="EnvenomsLostConnect"
+		lines_to_match="2"
+		keep_evaluating="y"
+		match="You coat .* with deadly poison\.\n\{invitem\}(\d+)\,.*\Z"
+		multi_line="y"
+		regexp="y"
+		script="WeaponCoatedLostConnect"
+		sequence="100"
+		>
+	</trigger>    
+	<trigger
+		group="InvData"
+		match="^\{invdata\}$"
+		regexp="y"
+		sequence="100"
+		omit_from_output="y"	
+		>
+	</trigger>
+    <trigger
+		script="GetWeaponsEnd"
+		group="InvData"
+		match="^\{\/invdata\}$"
+		regexp="y"
+		sequence="100"
+		omit_from_output="y"	
+		>
+	</trigger>
+    <trigger
+		script="GetWeapons"
+		group="InvData"
+		match="^(\d+),(\w+)?,(.*?),(\d+),(\d+),(\d+),\-1,\-1$"
+		regexp="y"
+		sequence="100"
+		omit_from_output="y"	
+		>
+	</trigger>
   	<trigger
 		expand_variables="y"
 		group="EqData"
@@ -84,6 +147,15 @@
 	<trigger
 		group="Envenoms"
 		keep_evaluating="y"
+		match="^(.*?) is already envenomed\.$"
+		regexp="y"
+		script="AlreadyEnvenom"
+		sequence="100"
+		>
+	</trigger>
+	<trigger
+		group="Envenoms"
+		keep_evaluating="y"
 		match="^You fail to envenom (.*?)\.$"
 		regexp="y"
 		script="EnvenomFail"
@@ -94,7 +166,7 @@
 		name="ReturnProtocol"
 		match="^Commence Already Envenomed Return protocol\!$"
 		regexp="y"
-		script="AlreadyEnvenomed"
+		script="AlreadyEnvenomedReturn"
 		sequence="100"
 		omit_from_output="y"
 		>
@@ -146,9 +218,44 @@
 		sequence="50"
 		>
 	</trigger>
+	<trigger
+		group="Envenoms"
+		match="^You receive (.*?) experience points.$"
+		regexp="y"
+		sequence="50"
+		>
+	</trigger>
+	<trigger
+		group="Envenoms"
+		match="^You receive (.*?) bonus experience points from your daily blessing.$"
+		regexp="y"
+		sequence="50"
+		>
+	</trigger>
+		<trigger
+		group="Envenoms"
+		match="^You receive (.*?) bonus quest points from your daily blessing\.$"
+		regexp="y"
+		sequence="50"
+		>
+	</trigger>
 </triggers>
 
 <timers>
+	<timer
+		name="Broadcaster" 
+		minute="3"  
+		enabled="n"
+		script="Broadcaster"
+		>
+	</timer>
+	<timer
+		name="envenomendweapon" 
+		second="1"  
+		enabled="n"
+		script="EndGetWeapons"
+		>
+	</timer>
 	<timer
 		name="envenomend" 
 		second="1"  
@@ -169,10 +276,10 @@
 
 <aliases>
 	<alias
-		script="env_help"
-		match="^env help$"
+		script="CommandMenu"
+		match="^(?:tenv|env|envenom)(.*?)$"
 		enabled="y"
-		expand_variables="y"
+		ignore_case="y"
 		regexp="y"
 		sequence="100"
 		>
@@ -186,104 +293,10 @@
 		sequence="100"
 		>
 	</alias>
-	<alias
-		name="EnvAll"
-		match="^envall$"
-		group="Envenoms"
-		script="EnvenomAll"
-		sequence="100"
-		regexp="y"
-		>
-		</alias>
-	<alias
-		match="^envoff$"
-		name="EnvOff"
-		group="Envenoms"
-		script="EnvenomOff"
-		sequence="100"
-		regexp="y"
-		>
-	</alias>
-	<alias
-		group="envon"
-		match="^(?:envons|envonsilent)$"
-		enabled="y"
-		name="EnvOnSilent"
-		script="EnvenomOnSilent"
-		sequence="100"
-		regexp="y"
-		>
-	</alias>
-
-	<alias
-		group="envon"
-		match="^envon$"
-		enabled="y"
-		name="EnvOn"
-		script="EnvenomOn"
-		sequence="100"
-		regexp="y"
-		>
-	</alias>
-	<alias
-		group="Envenoms"
-		match="^(envnew|envnewcomers|envnc)$"
-		script="NewComers"
-		name="NewComers"
-		sequence="100"
-		regexp="y"
-		>
-	</alias>
-		<alias
-		group="Envenoms"
-		match="^(envlc|envlastcall)$"
-		script="LastCall"
-		name="LastCall"
-		sequence="100"
-		regexp="y"
-		>
-	</alias>
-	<alias
-		script="EnvTrueHelm"
-		match="^(?:envhelm|envh) (\d+)$"
-		expand_variables="y"
-		regexp="y"
-		sequence="100"
-		enabled="y"
-		>
-	</alias>
-	<alias
-		script="EnvTrueHelmBag"
-		match="^(?:envbag|envb) (\d+)$"
-		expand_variables="y"
-		regexp="y"
-		sequence="100"
-		enabled="y"
-		>
-	</alias>
-	<alias
-		script="EnvBroadcastChannel"
-		match="^envbc (.*?)$"
-		enabled="y"
-		ignore_case="y"
-		regexp="y"
-		sequence="200"
-		>
-	</alias>
-	<alias
-		script="EnvBroadcastChannelDisplay"
-		match="^envbc$"
-		enabled="y"
-		ignore_case="y"
-		regexp="y"
-		sequence="200"
-		>
-	</alias>
 </aliases>
 
 <script>
 <![CDATA[
--- blah
 
 require "tprint"
 require "mw_theme_base"
@@ -295,96 +308,154 @@ require "aardmapper"
 require "aard_lua_extras"
 require "wait"
 
-local msg_colour      = "darkslategrey"
+local epic_colour     = "red"
+local msg_colour      = "lightslategrey"
 local err_colour      = "firebrick"
-local help_colour     = "royalblue"
-local qty_colour      = "yellow"
+local help_colour     = "lightslategrey"
+local qty_colour      = "cyan"
 local optional_colour = "lightcoral"
 local command_colour  = "white"
 local cmd_required    = "royalblue"
 local help_command_colour  = "red"
 
-EnvenomTable = {}
-EnvenomTableCopy = {}
-idnum = ""
-weapnum = 0
-weapnumcopy = 0
-EnvTrue = 0
-EnvTrueBag = 0
-EnvHelm = 0
-EnvGold = 0
-gmcparea = ""
-gmcproomid = ""
-gmcproomname = ""
-EnvBChannel = "gt"
-EnvSilent = "NO"
+local noteline = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 
-function EnvTrueHelm(name, line, wc)
+---------------------------------------------
+--------------- MENU FUNCTION ---------------
+---------------------------------------------
+function CommandMenu(name, line, wc)
+	commandline = trim(string.lower(wc[1]))
+	wordtable = utils.split (commandline, " ")
+
+	cmd = wordtable[1]
 	
-	if wc[1] == nill or wc[1] == "" then
+	if cmd == "help" then
+		env_help()
+	elseif cmd == "on" then
+		if EnvOn == "NO" then
+			if wordtable[2] ~= nil then
+				if (tonumber(wordtable[2])) ~= nil then
+					envminutes = tonumber(wordtable[2])
+
+					EnvenomOn(envminutes)
+					EnvOn = "YES"
+				else
+					ColourNote(msg_colour, "", "Command Usage: ", qty_colour, "", "env on <minutes til epic starts>")
+				end
+			else
+				EnvenomOn()
+				EnvOn = "YES"
+			end
+		else
+			ColourNote(msg_colour, "", "Envenoming System is ALREADY Online")
+		end
+	elseif cmd == "abort" or cmd == "cancel" then
+		check (EnableTimer ("Broadcaster", 0))
+		ColourNote(msg_colour, "", "Broadcasting has been turned off.")
+	elseif cmd == "ons" or cmd == "onsilent" then
+		if EnvOn == "YES" then
+			ColourNote(msg_colour, "", "Envenoming System is ALREADY Online")
+		else
+			EnvenomOnSilent()
+		end
+	elseif cmd == "settimer" then
+		if (tonumber(wordtable[2])) ~= nil then
+			minutes = tonumber(wordtable[2])
+			SetTimerOption ("Broadcaster", "minute", minutes)
+			TimerMinutes = minutes
+			
+			ColourNote(msg_colour, "", "Broadcast timer set to ", qty_colour, "", TimerMinutes, msg_colour, "", " minutes.")
+		else
+			ColourNote(msg_colour, "", "Please input a number of minutes")
+		end		
+	elseif cmd == "new" or cmd == "newcomers" or cmd == "nc" then
+		if EnvOn == "YES" then
+			NewComers()
+		else
+			ColourNote(msg_colour, "", "Envenoming System is NOT Online")
+		end
+	elseif cmd == "lastcall" or cmd == "newcomers" or cmd == "lc" then
+		if EnvOn == "YES" then
+			LastCall()
+		else
+			ColourNote(msg_colour, "", "Envenoming System is NOT Online")
+		end
+	elseif cmd == "all" then
+		if EnvOn == "YES" then
+			EnvenomAll()
+		else
+			ColourNote(msg_colour, "", "Envenoming System is NOT Online")
+		end
+	elseif cmd == "off" then
+		if EnvOn == "YES" or EnvSilent == "YES" then
+			EnvOn = "NO"
+
+			EnvenomOff()
+		else
+			ColourNote(msg_colour, "", "Envenoming System is ALREADY Offline")
+		end
+	elseif cmd == "helm" or cmd == "h" then
+		if (tonumber(wordtable[2])) ~= nil then
+			EnvTrue = tonumber(wordtable[2])
+			
+			ColourNote(msg_colour, "", "ID for your ", "red", "", "Aardwolf ", "yellow", "", "Helm of True Sight", msg_colour, "", " has been set to ", qty_colour, "", EnvTrue)			
+		else
+			ColourNote(msg_colour, "", "Please input a number of minutes")
+		end
+	elseif cmd == "bag" or cmd == "b" then
+		if (tonumber(wordtable[2])) ~= nil then
+			EnvTrueBag = tonumber(wordtable[2])
+			
+			ColourNote(msg_colour, "", "ID for your container storing ", "red", "", "Aardwolf ", "yellow", "", "Helm of True Sight", msg_colour, "", " has been set to ", qty_colour, "", EnvTrueBag)
+		else
+			ColourNote(msg_colour, "", "Please input a number of minutes")
+		end
+	elseif cmd == "bc" then
+		if wordtable[2] ~= nil then
+			EnvBChannel = wordtable[2]
+
+			ColourNote (msg_colour, "", "Envenom Broadcast channel has been changed to - ", qty_colour, "", EnvBChannel)
+		else
+			EnvBroadcastChannelDisplay()
+		end
+	elseif cmd == "w" or cmd == "weapons" then
+		StartGetWeapons()
 	else
-		
-		EnvTrue = tonumber(wc[1])
-		
-		ColourNote(msg_colour, "", "ID for your ", "red", "", "Aardwolf ", "yellow", "", "Helm of True Sight", msg_colour, "", " has been set to ", qty_colour, "", EnvTrue)
-		
+		-- ColourNote(msg_colour, "", "Invalid command. Please see ", qty_colour, "", "env help", msg_colour, "", " for more information.")
+		SendNoEcho ("env " .. cmd)
 	end
-
+	
 	SaveState()
-	
-end
-
-function EnvTrueHelmBag(name, line, wc)
-	
-	if wc[1] == nill or wc[1] == "" then
-	else
-		
-		EnvTrueBag = tonumber(wc[1])
-		
-		ColourNote(msg_colour, "", "ID for your container storing ", "red", "", "Aardwolf ", "yellow", "", "Helm of True Sight", msg_colour, "", " has been set to ", qty_colour, "", EnvTrueBag)
-		
-	end
-
-	SaveState()
-	
-end
+end -- CommandMenu
 
 function EnvGetHelmTrig()
-
 	world.EnableGroup ("EqData", 1)
 	world.EnableGroup ("EnvGetHelm", 1)
+	
 	SendNoEcho ("eqdata")
-
 end -- EnvGetHelmTrig
 
 function EnvGetHelm(name, line, wc)
-	
 	if tonumber(wc[2]) == 1 then
 		EnvHelm = tonumber(wc[1])
 	end
-
 end -- EnvGetHelm
 
 function WeaponID(name, line, wc)
-
 	idnum = wc[1]
 	weapnum = weapnum + 1
 	
 	EnvenomTable[weapnum] = {}
 	EnvenomTable[weapnum]["IDNumber"] = idnum
-	
-end
+end -- WeaponID
 
 function WeaponReceived(name, line, wc)
-
 	local charname = wc[2]
 	
 	EnvenomTable[weapnum]["CharName"] = charname
-	
-end
+end -- WeaponReceived
 
 function MultiWeaponReceived(name, line, wc)
-
 	local weapamt = tonumber(wc[1])
 	local charname = wc[3]
 	
@@ -394,15 +465,12 @@ function MultiWeaponReceived(name, line, wc)
 	for i = startnum, endnum do
 		EnvenomTable[i]["CharName"] = charname
 	end
-	
-end
+end -- MultiWeaponReceived
 
 function WeaponCoated(name, line, wc)
-
 	local number = wc[1]
 	
 	for i,v in ipairs(EnvenomTableCopy) do
-
 		weap = i
 
 		if EnvenomTableCopy[weap]["IDNumber"] == number then
@@ -413,89 +481,118 @@ function WeaponCoated(name, line, wc)
 				table.remove(EnvenomTableCopy, weap)
 			end
 		end
-		
 	end
 
 	weapnumcopy = weapnumcopy - 1
 	
 	world.EnableGroup ("Coated", 0)
-	
-end
+end -- WeaponCoated
 
 function EnvenomAll()
-
-	EnvenomTableCopy = {}
-	
-	for i,v in pairs(EnvenomTable) do
-		EnvenomTableCopy[i] = v
-	end
-
-	EnvenomTable = {}
-	
-	EnableAlias ("EnvAll", false)
-
-	weapnumcopy = weapnum
-
-	weapnum = 0
-	
-	local lag = weapnumcopy * 3
-	
-	SetTimerOption ("envenomend", "seconds", lag)
-	
-	check (ResetTimer ("envenomend"))
-	check (EnableTimer ("envenomend", 1))
-	
-	for i,v in ipairs(EnvenomTableCopy) do
-
-		weap = i
+	if EnvAllOn ~= true then
+		EnvenomTableCopy = {}
 		
-		if EnvenomTableCopy[weap]["IDNumber"] == nil or EnvenomTableCopy[weap]["IDNumber"] == "" then
+		for i,v in pairs(EnvenomTable) do
+			EnvenomTableCopy[i] = v
+		end
+
+		EnvenomTable = {}
+		
+		EnvAllOn = true
+
+		weapnumcopy = weapnum
+
+		weapnum = 0
+		
+		local lag = weapnumcopy * 3
+		
+		if lag > 59 then
+			lagminute = math.floor(lag / 60)
+			lagsecond = lag - (60 * lagminute)
+			
+			SetTimerOption ("envenomend", "minute", lagminute)
+			SetTimerOption ("envenomend", "second", lagsecond)
 		else
-			Send ("envenom " .. EnvenomTableCopy[weap]["IDNumber"])
+			SetTimerOption ("envenomend", "second", lag)
 		end
 		
+		check (EnableTimer ("envenomend", 1))
+		check (ResetTimer ("envenomend"))
+		
+		for i,v in ipairs(EnvenomTableCopy) do
+			weap = i
+			
+			if EnvenomTableCopy[weap]["IDNumber"] == nil or EnvenomTableCopy[weap]["IDNumber"] == "" then
+			else
+				Send ("envenom " .. EnvenomTableCopy[weap]["IDNumber"])
+			end
+		end
+		
+		EnableTrigger("ReturnProtocol")
+	else
+		ColourNote(msg_colour, "", "Envenoming already in progress")
 	end
-	
-	EnableTrigger("ReturnProtocol")
-	
-end
+end -- EnvenomAll
 
 function EnvenomAllNoCopy()
-
-	EnableAlias ("EnvAll", false)
-
 	local lag = weapnumcopy * 3
 	
-	SetTimerOption ("envenomend", "seconds", lag)
+	if lag > 59 then
+		lagminute = math.floor(lag / 60)
+		lagsecond = lag - (60 * lagminute)
+		
+		SetTimerOption ("envenomend", "minute", lagminute)
+		SetTimerOption ("envenomend", "second", lagsecond)
+	else
+		SetTimerOption ("envenomend", "second", lag)
+	end
 	
-	check (ResetTimer ("envenomend"))
 	check (EnableTimer ("envenomend", 1))
+	check (ResetTimer ("envenomend"))
 	
 	for i,v in ipairs(EnvenomTableCopy) do
-
 		weap = i
 		
 		Send ("envenom " .. EnvenomTableCopy[weap]["IDNumber"])
-		
 	end
 	
 	EnableTrigger("ReturnProtocol")
-	
-end
+end -- EnvenomAllNoCopy
 
 function EnvenomEnd()
-
 	SendNoEcho ("echo Commence Already Envenomed Return protocol!")
+	EnvAllOn = false
+
 	check (EnableTimer ("envenomend", 0))
+end -- EnvenomEnd
+
+function AlreadyEnvenom()
+	timerremainingminutes = 0
+	timerremainingseconds = GetTimerInfo ("envenomend", 13)
+
+	timerremainingseconds = tonumber(timerremainingseconds) - 3
+
+	if timerremainingseconds > 59 then
+		timerremainingminutes = math.floor(timerremainingseconds / 60)
+		timerremainingseconds = timerremainingseconds - (60 * timerremainingminutes)				
+	elseif timerremainingseconds < 0 then
+		if timerremainingminutes > 0 then
+			timerremainingminutes = timerremainingminutes - 1
+			timerremainingseconds = timerremainingseconds + 60			
+		end
+	end
 	
-end
+	SetTimerOption ("envenomend", "minute", timerremainingminutes)
+	SetTimerOption ("envenomend", "second", timerremainingseconds)
 
-function AlreadyEnvenomed()
+	check (EnableTimer ("envenomend", 1))
+	check (ResetTimer ("envenomend"))
+end -- AlreadyEnvenom
 
+function AlreadyEnvenomedReturn()
 	for i,v in ipairs(EnvenomTableCopy) do
-	
 		weap = i
-		
+
 		if EnvenomTableCopy[weap] == "" or EnvenomTableCopy[weap] == nil then
 		else
 			if EnvenomTableCopy[weap]["CharName"] == nil or EnvenomTableCopy[weap]["CharName"] == "" then
@@ -503,19 +600,15 @@ function AlreadyEnvenomed()
 				Send ("give " .. EnvenomTableCopy[weap]["IDNumber"] .. " " .. EnvenomTableCopy[weap]["CharName"])
 			end
 		end
-		
 	end
 
 	EnvenomTableCopy = {}
 	idnum = 0
 
-	EnableAlias ("EnvAll", true)
 	EnableTrigger("ReturnProtocol", false)
+end -- AlreadyEnvenomedReturn
 
-end
-
-function EnvenomOn()
-	
+function EnvenomOn(minutes)
 	GetRoom()
 	
 	EnvGetHelmTrig()
@@ -526,10 +619,7 @@ function EnvenomOn()
 	idnum = 0
 	EnvGold = 0
 	EnvSilent = "NO"
-	
-	EnableAlias ("EnvOn", false)
-	EnableAlias ("EnvOnSilent", false)
-	
+
 	world.EnableGroup ("Envenoms", 1)
 	SendNoEcho ("invmon on")
 
@@ -545,13 +635,20 @@ function EnvenomOn()
 	gmcpbase = gmcp("char.base") -- fetch char.status and return it as a Lua table
 	charname = gmcpbase.name
 
-	Send (EnvBChannel .. " @DEnvenom system is now @RONLINE @DLocation:[@R" .. gmcparea .. "@D/@R" .. gmcproomname .. "@D/@R" .. gmcproomid .. "@D]@w")
-	Send (EnvBChannel .. " @RDO NOT @Dgive all.'weapon' or errors may occur.@w")
-	
-end
+	timetostart = 0
+
+	if minutes ~= nil then
+		if (tonumber(minutes)) ~= nil then
+			timetostart = tonumber(minutes)
+			EnableBroadcast(timetostart)
+		end
+	else
+		Send (EnvBChannel .. " @DEnvenom system is now @RONLINE @DLocation:[@R" .. gmcparea .. "@D/@R" .. gmcproomname .. "@D/@R" .. gmcproomid .. "@D]@w")
+		Send (EnvBChannel .. " @RDO NOT @Dgive all.'weapon' or errors may occur.@w")
+	end	
+end -- EnvenomOn
 
 function EnvenomOnSilent()
-	
 	GetRoom()
 	
 	EnvGetHelmTrig()
@@ -562,11 +659,6 @@ function EnvenomOnSilent()
 	idnum = 0
 	EnvGold = 0
 	EnvSilent = "YES"
-	
-	EnableAlias ("EnvOn", false)
-	EnableAlias ("EnvOnSilent", false)
-	EnableAlias ("LastCall", false)
-	EnableAlias ("NewComers", false)
 	
 	world.EnableGroup ("Envenoms", 1)
 	SendNoEcho ("invmon on")
@@ -584,118 +676,112 @@ function EnvenomOnSilent()
 	
 	gmcpbase = gmcp("char.base") -- fetch char.status and return it as a Lua table
 	charname = gmcpbase.name
-
-end
+end -- EnvenomOnSilent
 
 function NewComers()
-
 	GetRoom()
 
 	Send (EnvBChannel .. " @DEnvenom system is @RONLINE@D (repeating for new comers) Location:[@R" .. gmcparea .. "@D/@R" .. gmcproomname .. "@D/@R" .. gmcproomid .. "@D]@w")
 	Send (EnvBChannel .. " @RDO NOT @Dgive all.'weapon' or errors may occur.@w")
-	
-end
+end -- NewComers
 
 function LastCall()
-
 	GetRoom()
 
 	Send (EnvBChannel .. " @RLAST CALL @Dfor Envenoms Location:[@R" .. gmcparea .. "@D/@R" .. gmcproomname .. "@D/@R" .. gmcproomid .. "@D]@w")
 	Send (EnvBChannel .. " @RDO NOT @Dgive all.'weapon' or errors may occur.@w")
-	
-end
+end -- LastCall
 
 function EnvenomOff()
-	
-		world.EnableGroup ("Envenoms", 0)
+	world.EnableGroup ("Envenoms", 0)
 
-		EnvenomTable = {}
-		EnvenomTableCopy = {}
-		
-		SendNoEcho ("invmon off")
-		SendNoEcho ("wear " .. EnvHelm)
+	EnvenomTable = {}
+	EnvenomTableCopy = {}
+	
+	SendNoEcho ("invmon off")
+	SendNoEcho ("wear " .. EnvHelm)
 
-		if EnvTrue ~= 0 then
-			SendNoEcho ("put " .. EnvTrue .. " " .. EnvTrueBag)
-		else
-			ColourNote(err_colour, "", "A reminder - You have not set the ID number for your TRUE SEEING HELM. Please read ", qty_colour, "", "envhelp", err_colour, "", " for more information.")
-			Note()
-			ColourNote(err_colour, "", "If True Seeing drops it might cause an error with the script.")
-		end
-	
-	EnableAlias ("EnvOn", true)
-	EnableAlias ("EnvOnSilent", true)
-	EnableAlias ("LastCall", true)
-	EnableAlias ("NewComers", true)
-	
+	if EnvTrue ~= 0 then
+		SendNoEcho ("put " .. EnvTrue .. " " .. EnvTrueBag)
+	else
+		ColourNote(err_colour, "", "A reminder - You have not set the ID number for your TRUE SEEING HELM. Please read ", qty_colour, "", "envhelp", err_colour, "", " for more information.")
+		Note()
+		ColourNote(err_colour, "", "If True Seeing drops it might cause an error with the script.")
+	end
+
 	if EnvSilent == "YES" then
 		EnvSilent = "NO"
 		ColourNote(msg_colour, "", "Envenom System is ", help_command_colour, "", "OFFLINE")
-		EnableAlias ("LastCall", true)
-		EnableAlias ("NewComers", true)
-
 	elseif EnvSilent == "NO" then
-		
 		Send (EnvBChannel .. " @DEnvenom system is now @ROFFLINE@D.@w")
 		
 		if EnvGold ~= 0 then
 			local gold = comma_value(EnvGold)
 			
-			Send (EnvBChannel .. " @DThank you for your donations of @R" .. gold .. " @Dgold.@w")
-			
+			Send (EnvBChannel .. " @DThank you for your donations of @R" .. gold .. " @Dgold.@w")	
 		end
 	end
-	
-end
+end -- EnvenomOff
 
 function EnvenomFail()
+	timerremainingminutes = 0
+	timerremainingseconds = GetTimerInfo ("envenomend", 13)
 
-	timerremaining = GetTimerOption ("envenomend", "second")
+	if timerremainingseconds > 59 then
+		timerremainingminutes = math.floor(timerremainingseconds / 60)
+		timerremainingseconds = timerremainingseconds - (60 * timerremainingminutes)				
+	elseif timerremainingseconds < 0 then
+		if timerremainingminutes > 0 then
+			timerremainingminutes = timerremainingminutes - 1
+			timerremainingseconds = timerremainingseconds + 60			
+		end
+	end
+
+	SetTimerOption ("envenomfail", "second", timerremainingseconds)
+	SetTimerOption ("envenomfail", "minute", timerremainingminutes)
+
+	timerremainingseconds = tonumber(timerremainingseconds) + 3
 	
-	SetTimerOption ("envenomfail", "seconds", timerremaining)
+	if timerremainingseconds > 59 then
+		timerremainingminutes = math.floor(timerremainingseconds / 60)
+		timerremainingseconds = timerremainingseconds - (60 * timerremainingminutes)				
+	elseif timerremainingseconds < 0 then
+		if timerremainingminutes > 0 then
+			timerremainingminutes = timerremainingminutes - 1
+			timerremainingseconds = timerremainingseconds + 60			
+		end
+	end
+
+	SetTimerOption ("envenomend", "minute", timerremainingminutes)
+	SetTimerOption ("envenomend", "second", timerremainingseconds)
 	
-	timerremaining = tonumber(timerremaining) + 3
-	
-	SetTimerOption ("envenomend", "seconds", timerremaining)
-	
-	check (ResetTimer ("envenomfail"))
-	check (ResetTimer ("envenomend"))
 	check (EnableTimer ("envenomfail", 1))
 	check (EnableTimer ("envenomend", 1))
-
-end
+	check (ResetTimer ("envenomfail"))
+	check (ResetTimer ("envenomend"))
+end -- EnvenomFail
 
 function EnvenomResume()
-
 	check (EnableTimer ("envenomfail", 0))
 
 	EnvenomAllNoCopy()
-
-end
+end -- EnvenomResume
 
 function ReturnWeapons()
-
 	world.EnableGroup ("OwnedCarry", 1)
 	Send ("ownedcarry")
-	
-end
+end -- ReturnWeapons
 
 function DisableWeaponReturn()
-
 	world.EnableGroup ("OwnedCarry", 0)
-	
-end
+end -- DisableWeaponReturn
 
 function EnableWeaponReturn(name, line, wc)
-
 	Send ("give (" .. wc[2] .. ") " .. wc[4])
-
-end
+end -- EnableWeaponReturn
 
 function GoldReceived(name, line, wc)
-
 	local gold = wc[1]
-
 	local leng = tonumber(string.len(gold))
 
 	if leng > 3 then
@@ -704,52 +790,287 @@ function GoldReceived(name, line, wc)
 
 	gold = tonumber(gold)
 	EnvGold = EnvGold + gold
-	
-end
+end -- GoldReceived
 
 function EnvBroadcastChannelDisplay()
-
 	if EnvBChannel == nil or EnvBChannel == "" then
 		ColourNote (err_colour, "", "No Envenom Broadcast Channel has been set.")
 	else
 		ColourNote (msg_colour, "", "Envenom Broadcast Channel is set to ", qty_colour, "", EnvBChannel)
 	end
-	
-end
+end -- EnvBroadcastChannelDisplay
 
-function EnvBroadcastChannel(name, line, wc)
-
-	if wc[1] == nil or wc[1] == "" then
-	else
-		
-		EnvBChannel = wc[1]
-		
-		ColourNote (msg_colour, "", "Envenom Broadcast channel has been changed to - ", qty_colour, "", EnvBChannel)
+--------------------------------------------
+---------- BROADCASTING FUNCTIONS ----------
+--------------------------------------------
+function EnableBroadcast(btime)
+	repeats = nil
+	rindex = 0
 	
-		SaveState()
+	if btime ~= nil then
+		tminute = GetTimerOption ("Broadcaster", "minute")
+	
+		repeats = math.floor(btime / tminute)
 	end
 	
-end
+	if repeats ~= nil then 
+		check (EnableTimer ("Broadcaster", 1))
+		check (ResetTimer ("Broadcaster"))
+	end
+	
+	firstbroadcast = "YES"
+	Broadcaster()
+end -- EnableBroadcast
+
+function Broadcaster()
+	if repeats ~= nil then
+		if firstbroadcast == "YES" then
+			message = "@DEnvenom system is now @RONLINE @DLocation:[@R" .. gmcparea .. "@D/@R" .. gmcproomname .. "@D/@R" .. gmcproomid .. "@D]@w"
+			firstbroadcast = "NO"
+		else
+			message = "@DEpic starting soon, get your envenoms. @DLocation:[@R" .. gmcparea .. "@D/@R" .. gmcproomname .. "@D/@R" .. gmcproomid .. "@D]@w"
+			
+			if rindex == repeats then
+				message = message .. " @W<<< @CLAST CALL @W>>>"
+			end
+		end
+
+		rindex = rindex + 1
+
+		SendNoEcho(EnvBChannel .. " " .. message .. "@w")
+
+		if rindex > repeats then
+			check (EnableTimer ("Broadcaster", 0))
+			return
+		end
+	end
+end -- Broadcaster
+
+-------------------------------------------
+-------- LOST CONNECTION FUNCTIONS --------
+-------------------------------------------
+function EnvenomFailLostConnect()
+	if envfail == "NO" then
+		envfail = "YES"
+		SendNoEcho ("echo Commence Failed Envenom Retry!")
+
+		check (EnableTimer ("envenomendweapon", 0))
+	end
+end -- EnvenomFailLostConnect
+
+function WeaponCoatedLostConnect(name, line, wc)
+	local number = wc[1]
+	
+	for i,v in pairs(WeaponTableCopy) do
+		weap = i
+
+		if weap == number then
+			table.remove(WeaponTableCopy, weap)
+		end
+	end
+end -- WeaponCoatedLostConnect
+
+function StartGetWeapons()
+	ColourNote(msg_colour, "", "Envenoming Weapons in Inventory")
+	WeaponTable = {}
+	envfail = "NO"
+	numweapon = 0
+
+	world.EnableGroup ("EnvenomsLostConnect", 1)
+	world.EnableGroup ("InvData", 1)
+	SendNoEcho ("invmon")
+	SendNoEcho ("invdata ansi")
+end -- StartGetWeapons
+
+function EndGetWeapons()
+	WeaponTable = {}
+	envfail = "NO"
+	
+	world.EnableGroup ("EnvenomsLostConnect", 0)
+	world.EnableGroup ("InvData", 0)
+	SendNoEcho ("invmon")
+
+	check (EnableTimer ("envenomendweapon", 0))
+
+	ColourNote(msg_colour, "", "Envenoming has finished")
+end -- EndGetWeapons
+
+function GetWeapons(name, line, wc)
+	objid = tonumber(wc[1])
+	wtype = tonumber(wc[5])
+	
+	if wtype == 5 then
+		if WeaponTable[objid] == nil then
+			WeaponTable[objid] = wc[3]
+			numweapon = numweapon + 1
+		end
+	end
+end -- GetWeapons
+
+function GetWeaponsEnd(name, line, wc)
+	world.EnableGroup ("InvData", 0)
+	
+	WeaponTableCopy = {}
+	
+	for i,v in pairs(WeaponTable) do
+		WeaponTableCopy[i] = v
+	end
+	
+	local lag = numweapon * 3
+
+	if lag > 59 then
+		lagminute = math.floor(lag / 60)
+		lagsecond = lag - (60 * lagminute)
+		
+		Note(lagminute)
+		Note(lagsecond)
+		SetTimerOption ("envenomendweapon", "minute", lagminute)
+		SetTimerOption ("envenomendweapon", "second", lagsecond)
+	else
+		SetTimerOption ("envenomendweapon", "second", lag)
+	end
+
+	check (EnableTimer ("envenomendweapon", 1))
+	check (ResetTimer ("envenomendweapon"))
+
+	for i,v in pairs(WeaponTableCopy) do
+		weap = i
+
+		if weap ~= nil then
+			Send ("envenom " .. weap)
+		end
+	end	
+end -- GetWeaponsEnd
+
+function FailedEnvenomRetry()
+	numweapon = 0
+	
+	for i,v in pairs(WeaponTableCopy) do
+		numweapon = numweapon + 1
+	end
+
+	local lag = numweapon * 3
+	
+	if lag > 59 then
+		lagminute = math.floor(lag / 60)
+		lagsecond = lag - (60 * lagminute)
+		
+		SetTimerOption ("envenomendweapon", "minute", lagminute)
+		SetTimerOption ("envenomendweapon", "second", lagsecond)
+	else
+		SetTimerOption ("envenomendweapon", "second", lag)
+	end
+	
+	check (EnableTimer ("envenomendweapon", 1))
+	check (ResetTimer ("envenomendweapon"))
+
+	for i,v in pairs(WeaponTableCopy) do
+		weap = i
+		
+		if weap ~= nil then
+			Send ("envenom " .. weap)
+		end
+	end	
+end -- FailedEnvenomRetry
+
+function AlreadyEnvenomLostConnect()
+	timerremainingminutes = 0
+	timerremainingseconds = GetTimerInfo ("envenomendweapon", 13)
+
+	timerremainingseconds = tonumber(timerremainingseconds) - 3
+	
+	if timerremainingseconds > 59 then
+		timerremainingminutes = math.floor(timerremainingseconds / 60)
+		timerremainingseconds = timerremainingseconds - (60 * timerremainingminutes)				
+	elseif timerremainingseconds < 0 then
+		if timerremainingminutes > 0 then
+			timerremainingminutes = timerremainingminutes - 1
+			timerremainingseconds = timerremainingseconds + 60			
+		end
+	end
+
+	SetTimerOption ("envenomendweapon", "minute", timerremainingminutes)
+	SetTimerOption ("envenomendweapon", "second", timerremainingseconds)
+
+	if GetTimerOption ("envenomendweapon", "enabled") == 1 then		
+		check (ResetTimer ("envenomendweapon"))
+	end
+end -- AlreadyEnvenomLostConnect
 
 -------------------------------------------
 ------------ GET ROOM FUNCTION ------------
 -------------------------------------------
-
 function GetRoom()
-
 	Send_GMCP_Packet("request room")
 
 	gmcparea = gmcp("room.info.zone")
 	gmcproomid = gmcp("room.info.num")
 	gmcproomname = gmcp("room.info.name")
-	
-end
+end -- GetRoom
 
 function env_help()
-
-	local title = "Tallimos' Envenomizer - Help"
-	local title2 = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+	local title = "Tallimos' Envenomizer v" .. PLUGIN_VERSION .. " Help"
+	local title2 = noteline
 	
+	spacing = HelpSpacing(title, title2)
+	
+	ColourNote(help_colour, "", spacing, help_command_colour, "", title)
+	ColourNote(help_colour, "", noteline)
+	ColourNote(help_colour, "", "This script will allow any venomist to envenom and return weapons to their owners")
+	ColourNote(help_colour, "", noteline)
+	
+	Note("")
+	
+	ColourNote(help_colour, "", "Main Commands")
+	ColourNote(help_colour, "", "-------------")
+
+	ColourNote(help_command_colour, "", "env on <minutes>", help_colour, "", " - turns the envenom system on and broadcasts at regular intervals for the set")
+	ColourNote(help_colour, "", "                   amount of time")
+
+	ColourNote(help_command_colour, "", "env on ", help_colour, "", " - turns the envenom system on without an automatic broadcast")
+	
+	ColourNote(help_command_colour, "", "env off", help_colour, "", " - turns the envenom system off")
+
+	ColourNote(help_command_colour, "", "env ons", help_colour, "", " - turns the envenom system on in silent mode")
+
+	ColourNote(help_command_colour, "", "env all", help_colour, "", " - envenom all weapons given to user")
+
+	ColourNote(help_command_colour, "", "checkweapons", help_colour, "", " - used at the end to returned any owned weapons to their owners that got missed")
+
+	Note("")
+	
+	ColourNote(help_colour, "", "Broadcast Commands")
+	ColourNote(help_colour, "", "------------------")
+
+	ColourNote(help_command_colour, "", "env bc <channel>", help_colour, "", " - sets the broadcast channel")
+	
+	ColourNote(help_command_colour, "", "env bc ", help_colour, "", " - shows what channel the user has set for broadcasting, default is gt")
+
+	ColourNote(help_command_colour, "", "env nc ", help_colour, "", " - repeats report channel messages for new comers")
+	ColourNote(help_colour, "", "          can also use ", help_command_colour, "", "env new", help_colour, "", " and ", help_command_colour, "", "env newcomers")
+
+	ColourNote(help_command_colour, "", "env lc ", help_colour, "", " - sends a last call for envenoms message to report channel")
+	ColourNote(help_colour, "", "          can also use ", help_command_colour, "", "env lastcall")
+
+	Note("")
+	
+	ColourNote(help_colour, "", "Other Commands")
+	ColourNote(help_colour, "", "--------------")
+
+	ColourNote(help_command_colour, "", "env settimer <minutes>", help_colour, "", " - sets the interval for each automatic broacast")
+
+	ColourNote(help_command_colour, "", "env helm <idnum>", help_colour, "", " - used to set the id number of your true seeing helm")
+	ColourNote(help_colour, "", "                   command can be shorten to ", help_command_colour, "", "env h")
+
+	ColourNote(help_command_colour, "", "env bag <idnum> ", help_colour, "", " - used to set the id number of the container which holds your true seeing helm")
+	ColourNote(help_colour, "", "                   command can be shorten to ", help_command_colour, "", "env b")
+	
+	
+	ColourNote(help_colour, "", noteline)
+	Note("")
+end	-- env_help
+
+function HelpSpacing(title, title2)
 	local leng = tonumber(string.len(title))
 	local leng2 = tonumber(string.len(title2))
 	
@@ -764,121 +1085,72 @@ function env_help()
 
 	spacing = string.rep(" ", lendif)
 	
-	ColourNote(help_colour, "", spacing, help_command_colour, "", "Tallimos' Envenomizer - Help")
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	ColourNote(help_colour, "", "This script will allow any venomist to envenom and return weapons to")
-	ColourNote(help_colour, "", "their owners")
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	Note("")
+	return spacing
+end -- HelpSpacing
 
-	ColourNote(help_command_colour, "", "envon          ", help_colour, "", " - turns the envenom system on")
-	Note("")
+function GetSavedData()
+	if GetVariable ("envpastfirstinstall") == "true" then
+		assert (loadstring (GetVariable ("EnvTrue") or "")) ()
+		assert (loadstring (GetVariable ("EnvTrueBag") or "")) ()
+		assert (loadstring (GetVariable ("EnvBChannel") or "")) ()		
+		assert (loadstring (GetVariable ("TimerMinutes") or "")) ()		
+	else
+		TimerMinutes = 3
+		EnvTrue = 0
+		EnvTrueBag = 0
+		EnvBChannel = "gt"
+	end
 
-	ColourNote(help_command_colour, "", "envons         ", help_colour, "", " - turns the envenom system on but does not broadcast")
-	Note("")
+	EnvenomTable = {}
+	EnvenomTableCopy = {}
+	EnvGold = 0
+	idnum = ""
+	weapnum = 0
+	weapnumcopy = 0
 
-	ColourNote(help_command_colour, "", "envoff         ", help_colour, "", " - turns the envenom system off")
-	Note("")
-	
-	ColourNote(help_command_colour, "", "envall         ", help_colour, "", " - envenom all weapons given to user")
-	Note("")
+	gmcparea = ""
+	gmcproomid = ""
+	gmcproomname = ""
+	EnvSilent = "NO"
+	EnvOn = "NO"
 
-	ColourNote(help_command_colour, "", "envbc <channel>", help_colour, "", " - sets the broadcast channel")
-	Note("")
-	
-	ColourNote(help_command_colour, "", "envbc          ", help_colour, "", " - shows what channel the user has set for broadcasting, default is gt")
-	Note("")
-
-	ColourNote(help_command_colour, "", "envnewcomers   ", help_colour, "", " - repeats report channel messages for new comers")
-	ColourNote(help_colour, "", "                  can also be shorten to", help_command_colour, "", "envnew", help_colour, "", " and ", help_command_colour, "", "envnc")
-	Note("")
-
-	ColourNote(help_command_colour, "", "envlastcall    ", help_colour, "", " - sends a last call for envenoms message to report channel")
-	ColourNote(help_colour, "", "                  can also be shorten to", help_command_colour, "", "envlc")
-	Note("")
-
-	ColourNote(help_command_colour, "", "checkweapons   ", help_colour, "", " - used at the end to returned any owned weapons to")
-	ColourNote(help_colour, "", "                  their owners that got missed")
-	Note("")
-
-	ColourNote(help_command_colour, "", "envhelm <idnum>", help_colour, "", " - used to set the id number of your true seeing helm")
-	ColourNote(help_colour, "", "                  command can be shorten to ", help_command_colour, "", "envh")
-	Note("")
-
-	ColourNote(help_command_colour, "", "envbag <idnum> ", help_colour, "", " - used to set the id number of the container which")
-	ColourNote(help_colour, "", "                  holds your true seeing helm command can be shorten")
-	ColourNote(help_colour, "", "                  to ", help_command_colour, "", "envb")
-	Note("")
-		
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	Note("")
-
-end	-- env_help
-
+	SaveState()
+end -- GetSavedData
 
 function OnPluginInstall ()
+	PLUGIN_VERSION  = GetPluginInfo(GetPluginID(), 19)
+	PLUGIN_NAME   = GetPluginInfo(GetPluginID(), 1)
 
-	ColourNote(help_colour, "", "Thank you for installing Tallimos' Envenomizer. Please see ", help_command_colour, "", "env help", help_colour, "", " for more information.")
-
-
-	if GetVariable ("envpastfirstinstall") == "true" then
-		assert (loadstring (GetVariable ("EnvTrue") or "")) ()
-		assert (loadstring (GetVariable ("EnvTrueBag") or "")) ()
-		assert (loadstring (GetVariable ("EnvBChannel") or "")) ()
-		
-	else
+	GetSavedData()	
 	
-		EnvTrue = 0
-		EnvTrueBag = 0
-		EnvBChannel = "gt"
-	end
+	ColourNote(msg_colour, "", "Thank you for installing ", qty_colour, "", "Tallimos' Envenomizer v" ..  PLUGIN_VERSION, msg_colour, "", ". Please see ", help_command_colour, "", "env help", msg_colour, "", " for more information.")
 
-	SaveState()
-
-end
+	Note("")	
+end -- OnPluginInstall
 
 function OnPluginEnable()
-	
-	if GetVariable ("envpastfirstinstall") == "true" then
-		assert (loadstring (GetVariable ("EnvTrue") or "")) ()
-		assert (loadstring (GetVariable ("EnvTrueBag") or "")) ()
-		assert (loadstring (GetVariable ("EnvBChannel") or "")) ()
-		
-	else
-	
-		EnvTrue = 0
-		EnvTrueBag = 0
-		EnvBChannel = "gt"
-
-	end
-
-	SaveState()
-   
+	GetSavedData()
 end -- OnPluginEnable
 
 function OnPluginSaveState ()
-
 	SetVariable ("EnvTrue", "EnvTrue = " .. serialize.save_simple (EnvTrue))
 	SetVariable ("EnvTrueBag", "EnvTrueBag = " .. serialize.save_simple (EnvTrueBag))
 	SetVariable ("EnvBChannel", "EnvBChannel = " .. serialize.save_simple (EnvBChannel))
-	SetVariable ("envpastfirstinstall", "true")
+	SetVariable ("TimerMinutes", "TimerMinutes = " .. serialize.save_simple (TimerMinutes))
 
+	SetVariable ("envpastfirstinstall", "true")
 end -- OnPluginSaveState
 
 function comma_value(n) 
 	local left,num,right = string.match(n,'^([^%d]*%d)(%d*)(.-)$')
 	return left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse())..right
-end
+end -- comma_value
 
 function remove_comma(n)
-
 	local value = n
 	value = string.gsub (value, ",", "")
 	return value
-	
 end -- remove_comma
-
-
 ]]>
 </script>
 </muclient>
