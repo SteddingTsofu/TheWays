@@ -15,7 +15,7 @@
    save_state="y"
    date_written="2020-11-21 19:39:22"
    requires="4.30"
-   version="1.0"
+   version="1.1"
    >
 
 </plugin>
@@ -28,6 +28,17 @@
 <!--  Triggers  -->
 
 <triggers>
+	<trigger
+		group="ImmReplace"
+		match="(mathematical|singing||dejected|socialite|good|goodie|angelic|impatient|kinda sorta good|the cool version of|the pancake|master|sober|unremarkable|smurfy|an evil form of|nascaard|bubbly|disagreeable|evil|pandemonium|record holding|sith lord|straight|helper|unhelpful|unrestrained|warsnail|disoriented|tjopping|cuddlebear)\s(\w+)"
+		regexp="y"
+		sequence="100"
+		script="ImmReplace"
+		ignore_case="y"
+		omit_from_output="n"
+		enabled="n"
+		>
+	</trigger>
 	<trigger
 		script="EndOfSearch"
 		group="ImmSearchTrig"
@@ -140,17 +151,20 @@ function CheckImm(name, line, wc)
 		-- for k,d in pairs(searchsplit) do
 			-- string.sub (k, 1, len)
 		-- end
-
+-- blah
 		local search = string.lower(ImmTable[immnum]["Short"])
 		
         len = string.len(SearchItem)
 
+        -- if string.find(string.sub(string.split(search," "),1,4),SearchItem) == nil then
 		for i,v in pairs(string.split(search," ")) do
 			if string.find(string.sub(v,1,len),SearchItem) == nil then
 			else
 				NotFound = "NO"
 				AmtFound = AmtFound + 1
 				CommandToSend = "scan " .. ImmTable[immnum]["Secret"]
+				skey = ImmTable[immnum]["Secret"]
+				
 				ColourNote(msg_colour, "", "Imm: ", help_command_colour, "", ImmTable[immnum]["Short"], msg_colour, "", " Secret Keyword(s): ", help_command_colour, "", ImmTable[immnum]["Secret"])
 			end
 		end
@@ -191,14 +205,13 @@ function CheckImmList(name, line, wc)
 end
 
 function EndOfSearch()
-	
-	
 	if NotFound == "NO" then 
 
 		local Command = string.gsub (CommandToSend, " %(no unique%)", "")
 		
 		if AmtFound == 1 then
 			SetCommand (Command)
+			SetClipboard(skey)
 		end
 		
 	elseif NotFound == "YES" then
@@ -228,6 +241,13 @@ function EndOfSearch()
 	
 end
 
+function ImmReplace(name, line, wc)
+	Note(wc[1])
+	Note(wc[2])
+	Note(wc[3])
+	Note(wc[4])
+end
+
 function CreateImmTable()
 
 	ImmTable = {}
@@ -237,7 +257,7 @@ function CreateImmTable()
 	ImmTable[1]["Secret"] = "helper goodimm"
 	ImmTable[2] = {}
 	ImmTable[2]["Short"] = "An Evil Form of Sagen"
-	ImmTable[2]["Secret"] = "form"
+	ImmTable[2]["Secret"] = "form notcarlsagen"
 	ImmTable[3] = {}
 	ImmTable[3]["Short"] = "Angelic Demonspawn"
 	ImmTable[3]["Secret"] = "angelic"
@@ -258,7 +278,7 @@ function CreateImmTable()
 	ImmTable[8]["Secret"] = "disoriented"
 	ImmTable[9] = {}
 	ImmTable[9]["Short"] = "Evil Aaeron"
-	ImmTable[9]["Secret"] = "evil shadow beast (no unique)"
+	ImmTable[9]["Secret"] = "shinythings"
 	ImmTable[10] = {}
 	ImmTable[10]["Short"] = "Evil Althalus"
 	ImmTable[10]["Secret"] = "homeskillet"
@@ -273,16 +293,16 @@ function CreateImmTable()
 	ImmTable[13]["Secret"] = "ragbrai"
 	ImmTable[14] = {}
 	ImmTable[14]["Short"] = "Evil Ghaan"
-	ImmTable[14]["Secret"] = "longg"
+	ImmTable[14]["Secret"] = "longghaan"
 	ImmTable[15] = {}
 	ImmTable[15]["Short"] = "Evil Halo"
-	ImmTable[15]["Secret"] = "fallen"
+	ImmTable[15]["Secret"] = "fallen jackandcoke"
 	ImmTable[16] = {}
 	ImmTable[16]["Short"] = "Evil Ikyu"
-	ImmTable[16]["Secret"] = "evil (no unique)"
+	ImmTable[16]["Secret"] = "ickypoo"
 	ImmTable[17] = {}
 	ImmTable[17]["Short"] = "Evil Justme"
-	ImmTable[17]["Secret"] = "evil helper"
+	ImmTable[17]["Secret"] = "helperisme"
 	ImmTable[18] = {}
 	ImmTable[18]["Short"] = "Evil Kharpern"
 	ImmTable[18]["Secret"] = "kittyimm"
@@ -297,43 +317,43 @@ function CreateImmTable()
 	ImmTable[21]["Secret"] = "thearchitect"
 	ImmTable[22] = {}
 	ImmTable[22]["Short"] = "Evil Madcatz"
-	ImmTable[22]["Secret"] = "mathiz"
+	ImmTable[22]["Secret"] = "mathizard"
 	ImmTable[23] = {}
 	ImmTable[23]["Short"] = "Evil Maerchyng"
 	ImmTable[23]["Secret"] = "maerchyng"
 	ImmTable[24] = {}
 	ImmTable[24]["Short"] = "Evil Morrigu"
-	ImmTable[24]["Secret"] = "devil"
+	ImmTable[24]["Secret"] = "devil morrigu"
 	ImmTable[25] = {}
 	ImmTable[25]["Short"] = "Evil OrcWarrior"
-	ImmTable[25]["Secret"] = "shadow beast (no unique)"
+	ImmTable[25]["Secret"] = "sheepshagger"
 	ImmTable[26] = {}
 	ImmTable[26]["Short"] = "Evil Pane"
-	ImmTable[26]["Secret"] = "pain"
+	ImmTable[26]["Secret"] = "painintheneck"
 	ImmTable[27] = {}
 	ImmTable[27]["Short"] = "Evil Plaideleon"
 	ImmTable[27]["Secret"] = "crazycanadian"
 	ImmTable[28] = {}
 	ImmTable[28]["Short"] = "Evil Rekhart"
-	ImmTable[28]["Secret"] = "hart"
+	ImmTable[28]["Secret"] = "hartsawreck"
 	ImmTable[29] = {}
 	ImmTable[29]["Short"] = "Evil Sarlock"
-	ImmTable[29]["Secret"] = "l33t"
+	ImmTable[29]["Secret"] = "l33td00d"
 	ImmTable[30] = {}
 	ImmTable[30]["Short"] = "Evil Tela"
-	ImmTable[30]["Secret"] = "tell"
+	ImmTable[30]["Secret"] = "telllllllla"
 	ImmTable[31] = {}
 	ImmTable[31]["Short"] = "Evil Timeghost"
 	ImmTable[31]["Secret"] = "floppyimm"
 	ImmTable[32] = {}
 	ImmTable[32]["Short"] = "Evil Tripitaka"
-	ImmTable[32]["Secret"] = "laketrip"
+	ImmTable[32]["Secret"] = "laketripit"
 	ImmTable[33] = {}
 	ImmTable[33]["Short"] = "Evil Tymme"
-	ImmTable[33]["Secret"] = "hourglass"
+	ImmTable[33]["Secret"] = "hourglass time"
 	ImmTable[34] = {}
 	ImmTable[34]["Short"] = "Evil Vladia"
-	ImmTable[34]["Secret"] = "sexy"
+	ImmTable[34]["Secret"] = "sexyvamp"
 	ImmTable[35] = {}
 	ImmTable[35]["Short"] = "Evil Whitdjinn"
 	ImmTable[35]["Secret"] = "thundercat"
@@ -354,16 +374,16 @@ function CreateImmTable()
 	ImmTable[40]["Secret"] = "newbiehater"
 	ImmTable[41] = {}
 	ImmTable[41]["Short"] = "Good Delight"
-	ImmTable[41]["Secret"] = "Good see"
+	ImmTable[41]["Secret"] = "turkishdelight"
 	ImmTable[42] = {}
 	ImmTable[42]["Short"] = "Good Dirtworm"
-	ImmTable[42]["Secret"] = "worm"
+	ImmTable[42]["Secret"] = "wormy"
 	ImmTable[43] = {}
 	ImmTable[43]["Short"] = "Good Eclaboussure"
 	ImmTable[43]["Secret"] = "dropbearimm"
 	ImmTable[44] = {}
 	ImmTable[44]["Short"] = "Good Filt"
-	ImmTable[44]["Secret"] = "plain"
+	ImmTable[44]["Secret"] = "plainolefilt"
 	ImmTable[45] = {}
 	ImmTable[45]["Short"] = "Good Glimmer"
 	ImmTable[45]["Secret"] = "betterhalfofclaire"
@@ -372,13 +392,13 @@ function CreateImmTable()
 	ImmTable[46]["Secret"] = "upgradeboy"
 	ImmTable[47] = {}
 	ImmTable[47]["Short"] = "Good Lumina"
-	ImmTable[47]["Secret"] = "thieves"
+	ImmTable[47]["Secret"] = "thievesrus"
 	ImmTable[48] = {}
 	ImmTable[48]["Short"] = "Good Oladon"
 	ImmTable[48]["Secret"] = "spellingbee"
 	ImmTable[49] = {}
 	ImmTable[49]["Short"] = "Good Rhuli"
-	ImmTable[49]["Secret"] = "ruli"
+	ImmTable[49]["Secret"] = "rulistheworld"
 	ImmTable[50] = {}
 	ImmTable[50]["Short"] = "Good Sausage"
 	ImmTable[50]["Secret"] = "fatbreakfast"
@@ -405,7 +425,7 @@ function CreateImmTable()
 	ImmTable[57]["Secret"] = "pokerimm"
 	ImmTable[58] = {}
 	ImmTable[58]["Short"] = "Good Zane"
-	ImmTable[58]["Secret"] = "Good figure (no unique)"
+	ImmTable[58]["Secret"] = "inzanity"
 	ImmTable[59] = {}
 	ImmTable[59]["Short"] = "Goodie Goodie Jaenelle"
 	ImmTable[59]["Secret"] = "Goodie sut"
@@ -435,7 +455,7 @@ function CreateImmTable()
 	ImmTable[67]["Secret"] = "singing"
 	ImmTable[68] = {}
 	ImmTable[68]["Short"] = "Sith Lord Neeper"
-	ImmTable[68]["Secret"] = "sith"
+	ImmTable[68]["Secret"] = "sithlord"
 	ImmTable[69] = {}
 	ImmTable[69]["Short"] = "Smurfy Laren"
 	ImmTable[69]["Secret"] = "smurfy"
