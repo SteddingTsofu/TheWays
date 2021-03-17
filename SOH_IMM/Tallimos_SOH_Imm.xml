@@ -29,17 +29,6 @@
 
 <triggers>
 	<trigger
-		group="ImmReplace"
-		match="(mathematical|singing||dejected|socialite|good|goodie|angelic|impatient|kinda sorta good|the cool version of|the pancake|master|sober|unremarkable|smurfy|an evil form of|nascaard|bubbly|disagreeable|evil|pandemonium|record holding|sith lord|straight|helper|unhelpful|unrestrained|warsnail|disoriented|tjopping|cuddlebear)\s(\w+)"
-		regexp="y"
-		sequence="100"
-		script="ImmReplace"
-		ignore_case="y"
-		omit_from_output="n"
-		enabled="n"
-		>
-	</trigger>
-	<trigger
 		script="EndOfSearch"
 		group="ImmSearchTrig"
 		match="^End of SOH IMM SEARCH$"
@@ -58,6 +47,24 @@
 		match="^(?:timm|tsoh) (.*?)$"
 		enabled="y"
 		script="CheckImm"
+		regexp="y"
+		sequence="110"
+		ignore_case="y"
+		>
+	</alias>
+	<alias
+		match="^(?:timm|tsoh) (?:chan|channel) (\w+) (.*?)$"
+		enabled="y"
+		script="CheckImmChannel"
+		regexp="y"
+		sequence="100"
+		ignore_case="y"
+		>
+	</alias>
+	<alias
+		match="^(?:timm|tsoh) tell (\w+) (.*?)$"
+		enabled="y"
+		script="CheckImmTell"
 		regexp="y"
 		sequence="100"
 		ignore_case="y"
@@ -100,81 +107,18 @@ require "aardmapper"
 require "aard_lua_extras"
 require "wait"
 
-local msg_colour      = "darkslategrey"
+local msg_colour      = "lightslategrey"
 local err_colour      = "firebrick"
-local help_colour     = "royalblue"
-local qty_colour      = "yellow"
+local help_colour     = "lightslategrey"
+local qty_colour      = "cyan"
 local optional_colour = "lightcoral"
 local command_colour  = "white"
 local cmd_required    = "royalblue"
 local help_command_colour  = "red"
 
-local line = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
-
--- local NotFound = "YES"
-
-function CheckImm(name, line, wc)
-
-	NotFound = "YES"
-	AmtFound = 0
-	
-	world.EnableGroup ("ImmSearchTrig", 1)
-	
-	local SearchItem = string.lower(wc[1])
-
-	local title = "School of Horrors IMM Secret Keyword - Searching for " .. SearchItem
-	
-	local leng = tonumber(string.len(title))
-	local leng2 = 80
-	
-	local spacing = 0
-	local lendif = 0
-	
-	if leng > leng2 then
-	else
-		lendif = leng2 - leng
-		lendif = lendif * 0.5
-	end
-
-	spacing = string.rep(" ", lendif)
-
-	ColourNote(msg_colour, "", spacing, msg_colour, "", "School of Horrors IMM Secret Keyword - Searching for ", qty_colour, "", SearchItem)
-	Note()
-	
-	for i,v in ipairs(ImmTable) do
-
-		immnum = i
-		
-		-- searchsplit = utils.split (search, " ")
-
-		-- len = tonumber(string.len(SearchItem))
-		-- for k,d in pairs(searchsplit) do
-			-- string.sub (k, 1, len)
-		-- end
--- blah
-		local search = string.lower(ImmTable[immnum]["Short"])
-		
-        len = string.len(SearchItem)
-
-        -- if string.find(string.sub(string.split(search," "),1,4),SearchItem) == nil then
-		for i,v in pairs(string.split(search," ")) do
-			if string.find(string.sub(v,1,len),SearchItem) == nil then
-			else
-				NotFound = "NO"
-				AmtFound = AmtFound + 1
-				CommandToSend = "scan " .. ImmTable[immnum]["Secret"]
-				skey = ImmTable[immnum]["Secret"]
-				
-				ColourNote(msg_colour, "", "Imm: ", help_command_colour, "", ImmTable[immnum]["Short"], msg_colour, "", " Secret Keyword(s): ", help_command_colour, "", ImmTable[immnum]["Secret"])
-			end
-		end
-	end
-	
-	SendNoEcho ("echo End of SOH IMM SEARCH")
-end
+local noteline = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 
 function CheckImmList(name, line, wc)
-
 	local title = "School of Horrors IMM Secret Keyword - Entire List"
 	
 	local leng = tonumber(string.len(title))
@@ -195,35 +139,52 @@ function CheckImmList(name, line, wc)
 	Note()
 	
 	for i,v in ipairs(ImmTable) do
-
 		immnum = i
 		
-		ColourNote(msg_colour, "", "Imm: ", help_command_colour, "", ImmTable[immnum]["Short"], msg_colour, "", " Secret Keyword(s): ", help_command_colour, "", ImmTable[immnum]["Secret"])
 		
-	end
-	
+		if ImmTable[immnum]["Short"] == nil then namespace = 24 else namespace = MakeSpace(ImmTable[immnum]["Short"], 24) end
+
+		ColourNote(msg_colour, "", "Imm: ", help_command_colour, "", ImmTable[immnum]["Short"] .. namespace, msg_colour, "", " Secret Keyword(s): ", help_command_colour, "", ImmTable[immnum]["Secret"])
+	end	
 end
 
-function EndOfSearch()
-	if NotFound == "NO" then 
+function CheckImm(name, line, wc)
+	channel = "none"
+	search = string.lower(wc[1])
+	
+	SearchImm(search, channel)
+end
 
-		local Command = string.gsub (CommandToSend, " %(no unique%)", "")
-		
-		if AmtFound == 1 then
-			SetCommand (Command)
-			SetClipboard(skey)
-		end
-		
-	elseif NotFound == "YES" then
+function CheckImmChannel(name, line, wc)
+	channel = wc[1]
+	search = string.lower(wc[2])
 	
-		local title = "No Results Found"
+	SearchImm(search, channel)
+end
+
+function CheckImmTell(name, line, wc)
+	channel = wc[1]
+	search = string.lower(wc[2])
+	tellcheck = "YES"
 	
+	SearchImm(search, channel)
+end
+
+function SearchImm(SearchItem, channel)
+	NotFound = "YES"
+	AmtFound = 0
+	
+	world.EnableGroup ("ImmSearchTrig", 1)
+	
+	if channel == "none" then
+		local title = "School of Horrors IMM Secret Keyword - Searching for " .. SearchItem
+		
 		local leng = tonumber(string.len(title))
 		local leng2 = 80
-
+		
 		local spacing = 0
 		local lendif = 0
-
+		
 		if leng > leng2 then
 		else
 			lendif = leng2 - leng
@@ -232,24 +193,92 @@ function EndOfSearch()
 
 		spacing = string.rep(" ", lendif)
 
+		ColourNote(msg_colour, "", spacing, msg_colour, "", "School of Horrors IMM Secret Keyword - Searching for ", qty_colour, "", SearchItem)
 		Note()
-		ColourNote(msg_colour, "", spacing, msg_colour, "", "No Results Found")
+	end
 	
+	for i,v in ipairs(ImmTable) do
+		immnum = i
+		
+		local search = string.lower(ImmTable[immnum]["Short"])
+		
+        len = string.len(SearchItem)
+
+		for i,v in pairs(string.split(search," ")) do
+			if string.find(string.sub(v,1,len),SearchItem) == nil then
+			else
+				NotFound = "NO"
+				AmtFound = AmtFound + 1
+				
+				if channel == "none" then 
+					CommandToSend = "scan " .. ImmTable[immnum]["Secret"]
+					skey = ImmTable[immnum]["Secret"]
+					
+					if ImmTable[immnum]["Short"] == nil then namespace = 24 else namespace = MakeSpace(ImmTable[immnum]["Short"], 24) end
+
+					ColourNote(msg_colour, "", "Imm: ", help_command_colour, "", ImmTable[immnum]["Short"] .. namespace, msg_colour, "", " Secret Keyword(s): ", help_command_colour, "", ImmTable[immnum]["Secret"])
+				else
+					message = "@DImm: @C" .. ImmTable[immnum]["Short"] .. " @DSecret Keyword(s): @C" .. ImmTable[immnum]["Secret"] .. "@w"
+				
+					if tellcheck == "YES" then
+						tellcheck = "NO"
+						
+						SendNoEcho("tell " .. channel .. " @R[SOH] " .. message)
+					else
+						SendNoEcho(channel .. " @R[SOH] " .. message)
+					end
+				end
+			end
+		end
+	end
+	
+	SendNoEcho ("echo End of SOH IMM SEARCH")
+end -- SearchImm
+
+function EndOfSearch()
+	if NotFound == "NO" then 
+		if channel == "none" then
+			local Command = string.gsub (CommandToSend, " %(no unique%)", "")
+		
+			if AmtFound == 1 then
+				SetCommand (Command)
+				SetClipboard(skey)
+			end
+		end
+	elseif NotFound == "YES" then
+		if channel == "none" then	
+			local title = "No Results Found"
+		
+			local leng = tonumber(string.len(title))
+			local leng2 = 80
+
+			local spacing = 0
+			local lendif = 0
+
+			if leng > leng2 then
+			else
+				lendif = leng2 - leng
+				lendif = lendif * 0.5
+			end
+
+			spacing = string.rep(" ", lendif)
+
+			Note()
+			ColourNote(msg_colour, "", spacing, msg_colour, "", "No Results Found")
+		else
+			if tellcheck == "YES" then
+				tellcheck = "NO"
+				SendNoEcho("tell " .. channel .. " @R[SOH] @DSorry no results found for @C" .. search .. "@D.@w")
+			else
+				SendNoEcho(channel .. " @R[SOH] @DSorry no results found for @C" .. search .. "@D.@w")
+			end
+		end
 	end
 	
 	world.EnableGroup ("ImmSearchTrig", 0)
-	
-end
-
-function ImmReplace(name, line, wc)
-	Note(wc[1])
-	Note(wc[2])
-	Note(wc[3])
-	Note(wc[4])
 end
 
 function CreateImmTable()
-
 	ImmTable = {}
 
 	ImmTable[1] = {}
@@ -492,11 +521,23 @@ function CreateImmTable()
 
 end
 
-function timm_help()
+function MakeSpace(title, maxleng)
+	local leng = tonumber(string.len(title))
+	local leng2 = tonumber(maxleng)
 	
-	local title = "Tallimos' SOH IMM Secret Keywords Help"
-	local title2 = "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
-		
+	local spacing = 0
+	local lendif = 0
+	
+	if leng > leng2 then
+	else
+		lendif = leng2 - leng
+	end
+
+	spacing = string.rep(" ", lendif)
+	return spacing
+end -- MakeSpace
+
+function HelpSpacing(title, title2)
 	local leng = tonumber(string.len(title))
 	local leng2 = tonumber(string.len(title2))
 	
@@ -511,35 +552,49 @@ function timm_help()
 
 	spacing = string.rep(" ", lendif)
 	
-	ColourNote(help_colour, "", spacing, help_command_colour, "", "Tallimos' SOH IMM Secret Keywords Help")
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	ColourNote(help_colour, "", "This plugin gives the user a quick reference to keywords for the imm mobs")
-	ColourNote(help_colour, "", "in School of Horrors.")
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	Note("")
+	return spacing
+end -- HelpSpacing
+
+function timm_help()
+	local title = "Tallimos' SOH IMM Secret Keywords v" .. PLUGIN_VERSION .. " Help"
+	local title2 = noteline
+
+	spacing = HelpSpacing(title, title2)
+	
+	ColourNote(help_colour, "", spacing, help_command_colour, "", "Tallimos' SOH IMM Secret Keywords v" .. PLUGIN_VERSION .. " Help")
+	ColourNote(help_colour, "", title2)
+	ColourNote(help_colour, "", "This plugin gives the user a quick reference to keywords for the imm mobs in School of Horrors.")
+	ColourNote(help_colour, "", title2)
 
 	ColourNote(help_colour, "", "The user can use either ", help_command_colour, "", "timm", help_colour, "", " or ", help_command_colour, "", "tsoh")
 	Note("")
 	
-	ColourNote(help_command_colour, "", "timm <imm name>", help_colour, "", " - command used to search the list for a particular imm")
-	ColourNote(help_command_colour, "", "                  <imm name>", help_colour, "", " can be the full name of mob, '", qty_colour, "", "Lasher", help_colour, "", "', or")
-	ColourNote(help_colour, "", "                  partial like '", qty_colour, "", "Lash", msg_colour, "", "'")
+	ColourNote(help_command_colour, "", "timm list                  ", help_colour, "", " - command to display the entire list of imms and their keywords")
+
+	ColourNote(help_command_colour, "", "timm <imm name>            ", help_colour, "", " - command used to search the list for a particular imm")
+	
+	ColourNote(help_command_colour, "", "timm chan <chan> <imm name>", help_colour, "", " - command used to search the list for a particular imm and display")
+	ColourNote(help_colour, "", "                              it to a channel")
+	
+	ColourNote(help_command_colour, "", "timm tell <char> <imm name>", help_colour, "", " - command used to search the list for a particular imm and display")
+	ColourNote(help_colour, "", "                              it in a tell")
+	
 	Note("")
 	
-	ColourNote(help_command_colour, "", "timm list      ", help_colour, "", " - command to display the entire list of imms and their") ColourNote(help_colour, "", "                  keywords")
-	Note("")
+	ColourNote(help_command_colour, "", "PLEASE NOTE", help_colour, "", ": <imm name> can be the full name of mob, '", qty_colour, "", "Lasher", help_colour, "", "', or partial like '", qty_colour, "", "Lash", msg_colour, "", "'")
 
-	ColourNote(help_colour, "", "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+	ColourNote(help_colour, "", title2)
 	Note("")
 
 end	-- timm_help
 
 function OnPluginInstall ()
-
-	ColourNote(help_colour, "", "Thank you for installing Tallimos' SOH Imm Secret Keywords. Please see ", help_command_colour, "", "timm help", help_colour, "", " for more information.")
+	PLUGIN_VERSION  = GetPluginInfo(GetPluginID(), 19)
+	PLUGIN_NAME   = GetPluginInfo(GetPluginID(), 1)
+	
+	ColourNote(help_colour, "", "Thank you for installing Tallimos' SOH Imm Secret Keywords v", qty_colour, "", PLUGIN_VERSION, msg_colour, "", ". Please see ", help_command_colour, "", "timm help", help_colour, "", " for more information.")
 	
 	CreateImmTable()
-
 end
 
 function OnPluginEnable()
