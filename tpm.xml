@@ -19,15 +19,6 @@
   </plugin>
 
   <plugin>
-    <name>Envenomizer 2020</name>
-    <author>Tallimos</author>
-    <id>b445cca7f6737a991a3f55ac</id>
-    <description>Gives Venomists the ability to automatically envenom any weapons given to them and passes them back via a command</description>
-    <download>https://raw.githubusercontent.com/SteddingTsofu/TheWays/main/Envenomizer2020/Tallimos_Envenomizer.zip</download>
-    <installpath>0</installpath>
-  </plugin>
-
-  <plugin>
     <name>Market Search</name>
     <author>Tallimos</author>
     <id>cb926e05698e4709d8fc6cff</id>
@@ -35,16 +26,6 @@
     <download>https://raw.githubusercontent.com/SteddingTsofu/TheWays/main/MarketSearch/Tallimos_MarketSearch.zip</download>
     <installpath>0</installpath>
   </plugin>
-  
-  <plugin>
-    <name>Mob Keyword Grabber (Brute Force)</name>
-    <author>Tallimos</author>
-    <id>a37d6804ac7168adfd1415d4</id>
-    <description>This gives the user an automatic way of find out not so obvious mob keywords</description>
-    <download>https://raw.githubusercontent.com/SteddingTsofu/TheWays/main/MobKeywordBF/Tallimos_MobKeywordBF.zip</download>
-    <installpath>0</installpath>
-  </plugin>
-
   
   <plugin>
     <name>QuitCheck</name>
@@ -61,15 +42,6 @@
     <id>03cda78cffb57ebed4f3b48c</id>
     <description>Lets you easily search up the secret keywords for the imm mobs in school of horrors.</description>
     <download>https://raw.githubusercontent.com/SteddingTsofu/TheWays/main/SOH_IMM/Tallimos_SOH_Imm.zip</download>
-    <installpath>0</installpath>
-  </plugin>
-
-  <plugin>
-    <name>StatDisrupter</name>
-    <author>Tallimos</author>
-    <id>528d70104de5ca0ab6b13d38</id>
-    <description>Lets you fine tune your spellup but automatically disrupting and recasting a spell the user wants to try for a better cast</description>
-    <download>https://raw.githubusercontent.com/SteddingTsofu/TheWays/main/StatDisruptor/Tallimos_StatDisruptor.zip</download>
     <installpath>0</installpath>
   </plugin>
   
