@@ -1722,6 +1722,8 @@ function clevel_help()
 
 	ColourNote(help_command_colour, "", "clevelg                        ", help_colour, "", " - similar to clevel bud displays good aligned mobs killed")
 	
+	ColourNote(help_command_colour, "", "cleveln                        ", help_colour, "", " - displays the top 5 mobs with no align restriction")
+	
 	ColourNote(help_command_colour, "", "clevel display                 ", help_colour, "", " - toggled the desired display type for clevel commands")
 	
 	ColourNote(help_command_colour, "", "clevel display (mobs|area)     ", help_colour, "", " - directly sets the desired display type for clevel commands")
