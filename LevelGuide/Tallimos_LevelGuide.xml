@@ -136,6 +136,15 @@
 	  >
 	</alias>
 	<alias
+	   script="checklevelneutral"
+	   match="^(checklevelneutral|clevelneutral|cleveln)$"
+	   enabled="y"
+	   expand_variables="y"
+	   regexp="y"
+	   sequence="100"
+	  >
+	</alias>
+	<alias
 	   script="CompleteGuideMenu"
 	   match="^(?:checklevel2|clevel2|cguide) (.*?)$"
 	   enabled="y"
@@ -609,6 +618,19 @@ function checklevelgood()
 	
 	SendNoEcho ("mobdeaths " .. minnum .. " " .. maxnum .. " good")
 end -- checklevelgood
+
+function checklevelneutral()
+	local minnum = tonumber(gmcpcharlevel) + mbminlevel
+	local maxnum = tonumber(gmcpcharlevel) + mbmaxlevel
+	
+	CreateMobTable()
+	
+	mobalign = "All"
+	
+	world.EnableGroup ("CheckLevelTriggers", 1)	
+	
+	SendNoEcho ("mobdeaths " .. minnum .. " " .. maxnum)
+end -- checklevelneutral
 
 function CreateMobTable()
 	MobTable = {}
@@ -1679,7 +1701,7 @@ function clevel_help()
 	
 	ColourNote(help_command_colour, "", "cguide add <range> <keyword> ", optional_colour, "", "(optional instructions)")
 	ColourNote(help_colour, "", "                             	  - adds an area to Gofer's Level Guide")
-	
+	ColourNote(help_colour, "", "                             	  - enter ", help_command_colour, "", "range", help_colour, "", " as it appears in the guide. For example: '", help_command_colour, "", "91-100", help_colour, "", "'")
 	ColourNote(help_colour, "", "                             	  - ", optional_colour, "", "(optional instructions)", help_colour, "", " can be like door <mob> but is limited to 12 characters")
 	
 	ColourNote(help_command_colour, "", "cguide remove <range> <keyword>", help_colour, "", " - remove an area from Gofer's Level Guide")
