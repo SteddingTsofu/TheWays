@@ -12,7 +12,9 @@ with others outside of the clan.
                       
 <b>Level Guide</b> - A level guide script that Gofer and I made. Shows some useful places to level in various
               level ranges. 
-                     
+
+<b>Link</b> - Align Lock management
+
 <b>MarketSearch</b> - <i>Work in progress</i> - Gives the user an easy way to search the market place.
 
 <b>PartroxisMazeMobList</b> - Gives the user the ability to search up mobs from the Partroxis Maze and return
