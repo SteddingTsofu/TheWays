@@ -1669,7 +1669,8 @@ function CreateCGuideTable()
 	CGuideTable[18] = {
 		"umari",
 		"oceanpark",
-		"qong(hot wok)",
+		"qong",
+		"temple",
 		}
 	
 end -- CreateCGuideTable
