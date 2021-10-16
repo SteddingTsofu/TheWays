@@ -943,8 +943,8 @@ function TowHelp()
 	
 	ColourNote(help_command_colour, "", "tow invis                 ", help_colour, "", " - displays what is currently set for the Invis Ring name")
 	
-	ColourNote(help_command_colour, "", "tow <sanc|invis|hide|sneak> <on|off>", help_colour, "", " - turns the display for the particular status on and off.")
-	ColourNote(help_colour, "", "                                     - user can leave out on/off to toggle display")
+	ColourNote(help_command_colour, "", "tow display <sanc|invis|hide|sneak> <on|off>", help_colour, "", " - turns the display for the particular status on and off.")
+	ColourNote(help_colour, "", "                                             - user can leave out on/off to toggle display")
 	
 	ColourNote(help_colour, "", noteline)
 	
