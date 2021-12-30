@@ -25,6 +25,9 @@ with others outside of the clan.
                    
 <b>SOH_IMM</b> - Gives the user the ability to search up IMM mobs and be given their secret keyword to be able to
           hunt the mob down faster.
+
+<b>Retreat</b> - Gives the user the ability to move or retreat using the keypad. Determines if user is in combat
+          or not.
           
 <b>WindsExtras</b> - Gives the user some useful aliaes to use while doing winds runs as well as a script similar
               to the Aarcheology checklist type script that is floating around but for winds cards.
