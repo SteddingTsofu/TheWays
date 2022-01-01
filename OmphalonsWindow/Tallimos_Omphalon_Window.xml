@@ -826,7 +826,10 @@ function HideWindow()
 end
 
 function ReDrawWindow()
-	my_window:clear()
+	if my_window ~= nil then
+		my_window:clear()
+	end
+	
 	winheight = my_window.default_height
 	
 	if sancstatus == nil or sancstatus == "N/A" then
@@ -1054,6 +1057,18 @@ function GetSavedData()
 	
 	SaveState()
 end
+
+function OnPluginConnect()
+	ClearWindow()
+	
+	GetSavedData()
+	
+	CreateWindow()
+	
+	if IsConnected() then
+		if not ran then Connected() end
+	end
+end -- OnPluginConnect
 
 ]]>
 </script>
